@@ -1,23 +1,33 @@
-extends Node
-
-const SIZE = 16
-enum TYPES { EMPTY, GREEN, CYAN, BLUE, RED, VIOLET, MAGENTA, YELLOW }
+extends Control
 
 var width
 var height
 
+var box_width
+var box_height
+
 var type
 var matrix
+var color
+
+var redraw = false
 
 func _init(t):
 	type = t
-	matrix = get_matrix(t)
+	matrix = tetrout.get_block_matrix(t)
+	color = tetrout.get_block_color(t)
 	update_size()
 
 func update_size():
+	redraw = true
+	
 	height = len(matrix)
 	width = len(matrix[0])
-
+	
+	box_width = width * tetrout.TETRIS_BLOCK_SIZE
+	box_height = height * tetrout.TETRIS_BLOCK_SIZE
+	
+	set_size(Vector2(box_width, box_height))
 
 func rotate(angle):
 	""" rotates source matrix by 90/180/270 degrees clock-wise
@@ -25,7 +35,7 @@ func rotate(angle):
 		matrix: input matrix
 		rot:rotation angle = rot * 90 degrees (clock wise)
 	"""
-	matrix = get_matrix(type)
+	matrix = tetrout.get_block_matrix(type)
 	
 	var m = []
 	var item = 0
@@ -53,57 +63,17 @@ func rotate(angle):
 	matrix = m
 	update_size()
 
+func _draw():
+	if !redraw:
+		return
+		
+	redraw = false
+	for y in range(height):
+		for x in range(width):
+			var _x = (height - y - 1) * tetrout.TETRIS_BLOCK_SIZE
+			var _y = x * tetrout.TETRIS_BLOCK_SIZE
+			
+			if matrix[y][x] == 1:
+				draw_texture(tetrout.block_texture, Vector2(_x, _y), color)
 
-# color scheme
-const GREEN_COLOR = Color(0.2, 1, 0.2)
-const CYAN_COLOR = Color(0.2, 0.8, 0.9)
-const BLUE_COLOR = Color(0.2, 0.2, 1)
-const RED_COLOR = Color(1, 0.2, 0.2)
-const VIOLET_COLOR = Color(0.7, 0.2, 0.9)
-const MAGENTA_COLOR = Color(0.9, 0.2, 0.8)
-const YELLOW_COLOR = Color(0.9, 1, 0.2)
 
-# block matrixes, where first dimension is y (bottom first) and second dimension is x (left first)
-const GREEN_MATRIX = [[1, 1], [1, 1]] # 2x2
-const CYAN_MATRIX = [[1, 1, 1], [0, 1, 0]] #3x2
-const BLUE_MATRIX = [[1], [1], [1], [1]] #1x4
-const RED_MATRIX = [[1, 1, 0], [0, 1, 1]] #3x2
-const VIOLET_MATRIX = [[0, 1, 1], [1, 1, 0]] #3x2
-const MAGENTA_MATRIX = [[1, 1], [0, 1], [0, 1]] #2x3
-const YELLOW_MATRIX = [[1, 1], [1, 0], [1, 0]] #2x3
-
-static func get_matrix(type):
-	match type:
-		TYPES.GREEN:
-			return GREEN_MATRIX
-		TYPES.CYAN:
-			return CYAN_MATRIX
-		TYPES.BLUE:
-			return BLUE_MATRIX
-		TYPES.RED:
-			return RED_MATRIX
-		TYPES.VIOLET:
-			return VIOLET_MATRIX
-		TYPES.MAGENTA:
-			return MAGENTA_MATRIX
-		TYPES.YELLOW:
-			return YELLOW_MATRIX
-
-static func get_color(type):
-	match type:
-		TYPES.GREEN:
-			return GREEN_COLOR
-		TYPES.CYAN:
-			return CYAN_COLOR
-		TYPES.BLUE:
-			return BLUE_COLOR
-		TYPES.RED:
-			return RED_COLOR
-		TYPES.VIOLET:
-			return VIOLET_COLOR
-		TYPES.MAGENTA:
-			return MAGENTA_COLOR
-		TYPES.YELLOW:
-			return YELLOW_COLOR
-		_:
-			return Color(0, 0, 0, 0)

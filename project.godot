@@ -16,7 +16,7 @@ config/icon="res://icon.png"
 
 [autoload]
 
-blocks="*res://scripts/blocks.gd"
+tetrout="*res://scripts/tetrout.gd"
 
 [display]
 
