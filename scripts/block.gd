@@ -9,6 +9,7 @@ var box_height
 var type
 var matrix
 var color
+var pos
 
 var redraw = false
 
@@ -16,6 +17,7 @@ func _init(t):
 	type = t
 	matrix = tetrout.get_block_matrix(t)
 	color = tetrout.get_block_color(t)
+	pos = Vector2()
 	update_size()
 
 func update_size():
