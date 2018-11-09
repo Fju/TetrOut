@@ -26,11 +26,10 @@ script = ExtResource( 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="." index="0"]
 
-position = Vector2( 37.905, 89.3475 )
+position = Vector2( 31.905, 196.348 )
 rotation = 1.5708
 frames = SubResource( 1 )
 animation = "fly"
-frame = 1
 playing = true
 _sections_unfolded = [ "Transform" ]
 

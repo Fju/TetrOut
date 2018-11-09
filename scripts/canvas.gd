@@ -26,6 +26,8 @@ func _init():
 func _ready():
 	# adjust size of control
 	set_size(Vector2(TETRIS_CANVAS_WIDTH, TETRIS_CANVAS_HEIGHT))
+	# don't draw content out of the canvas rectangle area
+	set_clip_contents(true) 
 	
 	var bl = Block.new(tetrout.TETRIS_BLOCK_TYPES.RED)
 	var bt = Block.new(tetrout.TETRIS_BLOCK_TYPES.YELLOW)
@@ -109,10 +111,22 @@ func get_global_pos_of_block(block):
 						TETRIS_CANVAS_HEIGHT - tetrout.TETRIS_BLOCK_SIZE * (block.pos.x + block.width))
 	
 	# transform to the canvas' origin
-	pos.x += anchor.x
-	pos.y += anchor.y
+	pos += anchor
 	return pos
+
+func get_column_of_global_pos(global_pos):
+	""" convert screen coordinates (global-x, global-y) to grid coordinates (row, column)
+	Args:
+		
+	Returns:
+		
+	"""
+	# top-left point of canvas
+	var anchor = get_global_position()
+
+	var column = (1.0 - (global_pos.y - anchor.y) / TETRIS_CANVAS_HEIGHT) * tetrout.TETRIS_COLUMNS
 	
+	return column
 var redraw = true
 func _draw():
 	# don't redraw every time
