@@ -9,20 +9,25 @@ var box_height
 var type
 var matrix
 var color
-var pos
+var pos = Vector2()
 
 var redraw = false
 
-func _init(t):
+func _init(t, ghost=false):
 	type = t
+
 	matrix = tetrout.get_block_matrix(t)
-	color = tetrout.get_block_color(t)
-	pos = Vector2()
+	
+	# make transparent if it's a ghost block
+	# note: this has no effect on blocks that have been added to the TetrisCanvas
+	color = tetrout.get_block_color(t) if !ghost else Color(1, 1, 1, 0.25)
+
 	update_size()
 
 func update_size():
 	redraw = true
 	
+	print(matrix)
 	height = len(matrix)
 	width = len(matrix[0])
 	
@@ -51,11 +56,11 @@ func rotate(angle):
 				row.append(item)
 			# add row to matrix
 			m.append(row)
-	elif angle == 2:
+	else:
 		for y in range(height):
 			var row = []
 			for x in range(width):
-				item = matrix[height-y-1][x]
+				item = matrix[height-y-1][x] if angle == 2 else matrix[y][x]
 				# add item to row
 				row.append(item)
 			# add row to matrix
@@ -65,11 +70,15 @@ func rotate(angle):
 	matrix = m
 	update_size()
 
+func kill():
+	queue_free()
+
 func _draw():
 	if !redraw:
 		return
 		
 	redraw = false
+	
 	for y in range(height):
 		for x in range(width):
 			var _x = (height - y - 1) * tetrout.TETRIS_BLOCK_SIZE

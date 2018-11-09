@@ -31,6 +31,7 @@ position = Vector2( 37.905, 89.3475 )
 rotation = 1.5708
 frames = SubResource( 1 )
 animation = "fly"
+frame = 1
 playing = true
 script = ExtResource( 6 )
 _sections_unfolded = [ "Transform" ]
