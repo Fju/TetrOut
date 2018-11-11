@@ -14,7 +14,7 @@ animations = [ {
 "frames": [ ExtResource( 4 ), ExtResource( 5 ) ],
 "loop": true,
 "name": "idle",
-"speed": 3.0
+"speed": 6.0
 }, {
 "frames": [ ExtResource( 6 ), ExtResource( 7 ) ],
 "loop": true,
@@ -37,32 +37,29 @@ _sections_unfolded = [ "Offset", "Region", "Visibility" ]
 
 [node name="Player" type="Node2D" parent="." index="1"]
 
-position = Vector2( 32.8357, 82.2643 )
+position = Vector2( 38, 90 )
 script = ExtResource( 3 )
 _sections_unfolded = [ "Transform" ]
+__meta__ = {
+"_edit_group_": true
+}
 speed = 150.0
-max_angle = 12.5
+max_angle = 7.5
 angular_velocity = 200.0
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Player" index="0"]
 
 rotation = 1.5708
 frames = SubResource( 1 )
-animation = "fly"
+animation = "idle"
+frame = 1
 playing = true
 _sections_unfolded = [ "Transform" ]
 
 [node name="BlockPosition" type="Position2D" parent="Player" index="1"]
 
-position = Vector2( 24, 0 )
+position = Vector2( 48, 0 )
 _sections_unfolded = [ "Transform" ]
-
-[node name="Timer" type="Timer" parent="Player" index="2"]
-
-process_mode = 1
-wait_time = 1.0
-one_shot = false
-autostart = false
 
 [node name="Control" type="Control" parent="." index="2"]
 
@@ -79,7 +76,5 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 _sections_unfolded = [ "Margin", "Rect" ]
-
-[connection signal="timeout" from="Player/Timer" to="Player" method="_on_Timer_timeout"]
 
 

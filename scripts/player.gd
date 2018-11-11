@@ -16,16 +16,42 @@ export (float) var angular_velocity
 var desired_angle = 0
 var angle = 0
 
-var current_block
+var canvas_top = 0
+var canvas_bottom = 0
 
-func spawn_block(type):
-	current_block = Block.new(type)	
-	
-	add_child(current_block)
-	current_block.set_position($BlockPosition.get_position())
+var velocity setget set_velocity, get_velocity
+var current_block setget set_current_block, get_current_block
+
+func _ready():
+	# initialize variables with setters and getters
+	velocity = Vector2()
 
 func _process(delta):
-	var velocity = Vector2() # The player's movement vector.
+	# go back to center position by default
+	desired_angle = 0
+	if velocity.length() > 0:
+		# player is moving, play `fly` animation
+		$AnimatedSprite.play('fly')
+		# check whether player is moving up or down
+		if velocity.y > 0:
+			desired_angle = max_angle # turn right
+		else:			
+			desired_angle = -max_angle # turn left
+	else:
+		# player is not moving, play `idle` animation
+		$AnimatedSprite.play('idle')
+	
+	# obtain current position
+	var pos = get_global_position()
+	# add velocity vector to current position
+	pos += velocity * speed * delta
+	
+	var half_block_width = 0 if !current_block else current_block.box_width / 2
+	
+	# limit player's position vertically
+	pos.y = clamp(pos.y, canvas_top + half_block_width, canvas_bottom - half_block_width)
+	
+	set_global_position(pos)
 	
 	# change angle incremantally, nice transition
 	if angle != desired_angle:
@@ -37,47 +63,32 @@ func _process(delta):
 			# clamp angle to desired angle
 			angle = clamp(angle + angle_delta, -max_angle, desired_angle)
 	
-	$AnimatedSprite.set_rotation_degrees(90 + angle)
-	
-	# no rotation by default
-	desired_angle = 0
-	if Input.is_action_pressed("ui_down"):
-		velocity.y += 1
-		# turn right
-		desired_angle = max_angle
-		
-	if Input.is_action_pressed("ui_up"):
-		velocity.y -= 1
-		# turn left
-		desired_angle = -max_angle
-        
-	if velocity.length() > 0:
-		# player is moving
-		$AnimatedSprite.play('fly')
-	else:
-		$AnimatedSprite.play('idle')
-	
-	position += velocity * speed * delta
-	position = position.round()
-	
-	
-	
-	if Input.is_action_just_pressed("game_shoot_block") and $Timer.is_stopped():
-		# use timer for cool down, player can't fire a block within the next 500 ms
-		$Timer.start()
-		
-		if !current_block:
-			# spawn new block, if there is no current block present
-			spawn_block(tetrout.TETRIS_BLOCK_TYPES.MAGENTA)
-		
-	if Input.is_action_just_pressed("game_rotate_block"):
-		if current_block:
-			current_block.rotate()
-		
-	
-	# TODO: player can only move inbetween the vertical height of the TetrisCanvas
-	#position.x = clamp(position.x, 0, screensize.x)
-	#position.y = clamp(position.y, 0, screensize.y)
+	# set rotation of sprite
+	$AnimatedSprite.set_rotation_degrees(90 + angle) 
 
-func _on_Timer_timeout():
-	$Timer.stop()
+# define setters and getters
+func set_velocity(val):
+	velocity = val
+
+func get_velocity():
+	return velocity
+
+func set_current_block(type):
+	if current_block:
+		current_block.kill()
+	
+	current_block = Block.new(type)	
+	
+	add_child(current_block)
+	current_block.set_position($BlockPosition.get_position())
+
+func get_current_block():
+	return current_block
+
+func rotate_block():	
+	if current_block:
+		# rotate block
+		current_block.rotate()
+		# update position
+		current_block.set_position($BlockPosition.get_position())	
+	

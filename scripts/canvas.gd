@@ -12,8 +12,8 @@ extends Control
 
 const Block = preload("res://scripts/block.gd")
 
-var TETRIS_CANVAS_WIDTH = tetrout.TETRIS_BLOCK_SIZE * tetrout.TETRIS_COLUMNS
-var TETRIS_CANVAS_HEIGHT = tetrout.TETRIS_BLOCK_SIZE * tetrout.TETRIS_ROWS
+var width = tetrout.TETRIS_BLOCK_SIZE * tetrout.TETRIS_COLUMNS
+var height = tetrout.TETRIS_BLOCK_SIZE * tetrout.TETRIS_ROWS
 
 # two dimensional array containing every item that should be displayed
 # each entry contains a specific type (e.g. red, yellow, etc. or empty)
@@ -25,7 +25,7 @@ func _init():
 
 func _ready():
 	# adjust size of control
-	set_size(Vector2(TETRIS_CANVAS_WIDTH, TETRIS_CANVAS_HEIGHT))
+	set_size(Vector2(width, height))
 	
 	var bl = Block.new(tetrout.TETRIS_BLOCK_TYPES.RED)
 	var bt = Block.new(tetrout.TETRIS_BLOCK_TYPES.YELLOW)
@@ -105,8 +105,8 @@ func get_global_pos_of_block(block):
 	var anchor = get_global_position()
 	
 	# converted coordinates, note that row index is equal to x-axis position not y-axis!!
-	var pos = Vector2(TETRIS_CANVAS_WIDTH - tetrout.TETRIS_BLOCK_SIZE * (block.pos.y + block.height), \
-						TETRIS_CANVAS_HEIGHT - tetrout.TETRIS_BLOCK_SIZE * (block.pos.x + block.width))
+	var pos = Vector2(width - tetrout.TETRIS_BLOCK_SIZE * (block.pos.y + block.height), \
+						height - tetrout.TETRIS_BLOCK_SIZE * (block.pos.x + block.width))
 	
 	# transform to the canvas' origin
 	pos.x += anchor.x
@@ -121,14 +121,14 @@ func _draw():
 	
 	redraw = false
 	# highlight canvas area decently
-	draw_rect(Rect2(Vector2(0, 0), Vector2(TETRIS_CANVAS_WIDTH, TETRIS_CANVAS_HEIGHT)), Color(1, 1, 1, 0.1), true)
+	draw_rect(Rect2(Vector2(0, 0), Vector2(width, height)), Color(1, 1, 1, 0.1), true)
 	
 	for row in range(tetrout.TETRIS_ROWS):
 		for column in range(tetrout.TETRIS_COLUMNS):
 			var type = area[row][column]
 
-			var x = TETRIS_CANVAS_WIDTH - tetrout.TETRIS_BLOCK_SIZE * (row + 1)
-			var y = TETRIS_CANVAS_HEIGHT - tetrout.TETRIS_BLOCK_SIZE * (column + 1)
+			var x = height - tetrout.TETRIS_BLOCK_SIZE * (row + 1)
+			var y = width - tetrout.TETRIS_BLOCK_SIZE * (column + 1)
 			# draw blocks
 			draw_texture(tetrout.block_texture, Vector2(x, y), tetrout.get_block_color(type))
 	

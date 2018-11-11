@@ -11,11 +11,10 @@ var matrix
 var color
 var pos = Vector2()
 
-var redraw = false
-
 func _init(t, ghost=false):
+	# store type
 	type = t
-
+	# obtain original matrix
 	matrix = tetrout.get_block_matrix(t)
 	
 	# make transparent if it's a ghost block
@@ -35,20 +34,11 @@ func update_size():
 	box_height = height * tetrout.TETRIS_BLOCK_SIZE
 	
 	set_size(Vector2(box_width, box_height))
-	
 
-func set_global_position(pos):
-	""" override function, centers the object """
-	pos.x -= box_width / 2
-	pos.y -= box_height / 2
-	
-	# call super function of inherited class
-	.set_global_position(pos)
-	
 func set_position(pos):
 	""" override function, centers the object """
-	pos.x -= box_width / 2
-	pos.y -= box_height / 2
+	pos.x -= box_height / 2
+	pos.y -= box_width / 2
 	
 	# call super function of inherited class
 	.set_position(pos)
@@ -65,13 +55,17 @@ func rotate():
 		# add row to matrix
 		m.append(row)
 
+	# update matrix
 	matrix = m
 	update_size()
 
 func kill():
 	queue_free()
 
+
+var redraw = false
 func _draw():
+	""" draw function, renders all blocks """
 	if !redraw:
 		return
 		
