@@ -11,11 +11,11 @@ var matrix
 var color
 var pos = Vector2()
 
-var redraw = false
 
 func _init(t, ghost=false):
+	# store type
 	type = t
-
+	# obtain original matrix
 	matrix = tetrout.get_block_matrix(t)
 	
 	# make transparent if it's a ghost block
@@ -36,44 +36,36 @@ func update_size():
 	
 	set_size(Vector2(box_width, box_height))
 
-func rotate(angle):
-	""" rotates source matrix by 90/180/270 degrees clock-wise
-	Args:
-		matrix: input matrix
-		rot:rotation angle = rot * 90 degrees (clock wise)
-	"""
-	matrix = tetrout.get_block_matrix(type)
+func set_position(pos):
+	""" override function, centers the object """
+	pos.x -= box_height / 2
+	pos.y -= box_width / 2
 	
+	# call super function of inherited class
+	.set_position(pos)
+
+func rotate():
+	""" rotates matrix by 90 degrees """	
 	var m = []
-	var item = 0
-	
-	if angle % 2 == 1:
-		for x in range(width):
-			var row = []
-			for y in range(height):
-				item = matrix[height-y-1][x] if angle == 1 else matrix[y][x]
-				# add item to row
-				row.append(item)
-			# add row to matrix
-			m.append(row)
-	else:
+	for x in range(width):
+		var row = []
 		for y in range(height):
-			var row = []
-			for x in range(width):
-				item = matrix[height-y-1][x] if angle == 2 else matrix[y][x]
-				# add item to row
-				row.append(item)
-			# add row to matrix
-			m.append(row)
-	
-	# update source matrix
+			var item = matrix[height-y-1][x]
+			# add item to row
+			row.append(item)
+		# add row to matrix
+		m.append(row)
+
+	# update matrix
 	matrix = m
 	update_size()
 
 func kill():
 	queue_free()
 
+var redraw = false
 func _draw():
+	""" draw function, renders all blocks """
 	if !redraw:
 		return
 		

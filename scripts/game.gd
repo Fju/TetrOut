@@ -3,7 +3,6 @@ extends Node
 var TetrisCanvas = preload("res://scripts/canvas.gd")
 var Block = preload("res://scripts/block.gd")
 
-var cyan_block
 var canvas
 
 func _ready():
@@ -16,25 +15,23 @@ func _ready():
 	canvas_pos.x = tetrout.WINDOW_WIDTH - canvas_size.x
 	canvas_pos.y = (tetrout.WINDOW_HEIGHT - canvas_size.y) / 2
 	
-	print(canvas_pos)
-	
 	canvas.set_global_position(canvas_pos)
 	
+	$Player.canvas_top = canvas_pos.y
+	$Player.canvas_bottom = canvas_pos.y + canvas.height
 	
-	cyan_block = Block.new(tetrout.TETRIS_BLOCK_TYPES.VIOLET, true)
-	cyan_block.rotate(0)
-	add_child(cyan_block)
-	
-	
-	
-var b = 0
-func _process(delta):
-	var player_pos = get_node("Player").get_global_position()
-	
-	b = floor(canvas.get_column_of_global_pos(player_pos))
-	
-	cyan_block.pos.x = b
-	cyan_block.pos.y = canvas.get_collision_row(cyan_block)
+	$Player.set_current_block(tetrout.TETRIS_BLOCK_TYPES.BLUE)
 
-	var a = canvas.get_global_pos_of_block(cyan_block)
-	cyan_block.set_global_position(a)
+
+func _process(delta):	
+	var player_velocity = Vector2()
+	if Input.is_action_pressed('game_move_player_up'):
+		player_velocity.y -= 1
+	
+	if Input.is_action_pressed('game_move_player_down'):
+		player_velocity.y += 1
+	
+	$Player.set_velocity(player_velocity)
+	
+	if Input.is_action_just_pressed('game_rotate_block'):
+		$Player.rotate_block()
