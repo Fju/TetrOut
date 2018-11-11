@@ -34,7 +34,7 @@ func _ready():
 	
 	add_block(bl, Vector2(0, 0))
 	
-	bl.rotate(1)
+	bl.rotate()
 	add_block(bl, Vector2(3, 0))
 	
 	add_block(bt, Vector2(5, 1))

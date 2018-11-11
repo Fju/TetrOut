@@ -1,10 +1,11 @@
 extends Node
 
 var TetrisCanvas = preload("res://scripts/canvas.gd")
-var Block = preload("res://scripts/block.gd")
 
-var cyan_block
+
+
 var canvas
+var player
 
 func _ready():
 	canvas = TetrisCanvas.new()
@@ -21,17 +22,17 @@ func _ready():
 	canvas.set_global_position(canvas_pos)
 	
 	
-	cyan_block = Block.new(tetrout.TETRIS_BLOCK_TYPES.VIOLET, true)
-	cyan_block.rotate(0)
-	add_child(cyan_block)
+	#cyan_block = Block.new(tetrout.TETRIS_BLOCK_TYPES.VIOLET, true)
+	#cyan_block.rotate(3)
+	#add_child(cyan_block)
 	
 var b = 0
 func _process(delta):
 	if Input.is_action_just_pressed('ui_accept'):
 		b = (b + 1) % 12
 	
-	cyan_block.pos.x = b
-	cyan_block.pos.y = canvas.get_collision_row(cyan_block)
+	#cyan_block.pos.x = b
+	#cyan_block.pos.y = canvas.get_collision_row(cyan_block)
 
-	var a = canvas.get_global_pos_of_block(cyan_block)
-	cyan_block.set_global_position(a)
+	#var a = canvas.get_global_pos_of_block(cyan_block)
+	#cyan_block.set_global_position(a)
