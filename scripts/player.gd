@@ -26,6 +26,11 @@ func _ready():
 	# initialize variables with setters and getters
 	velocity = Vector2()
 
+func kill_current_block():
+	if current_block:
+		current_block.queue_free()
+		current_block = null
+	
 func _process(delta):
 	# go back to center position by default
 	desired_angle = 0
@@ -64,7 +69,7 @@ func _process(delta):
 			angle = clamp(angle + angle_delta, -max_angle, desired_angle)
 	
 	# set rotation of sprite
-	$AnimatedSprite.set_rotation_degrees(90 + angle) 
+	$AnimatedSprite.set_rotation_degrees(90 + angle)
 
 # define setters and getters
 func set_velocity(val):
@@ -75,7 +80,7 @@ func get_velocity():
 
 func set_current_block(type):
 	if current_block:
-		current_block.kill()
+		current_block.queue_free()
 	
 	current_block = Block.new(type)	
 	
@@ -90,5 +95,7 @@ func rotate_block():
 		# rotate block
 		current_block.rotate()
 		# update position
-		current_block.set_position($BlockPosition.get_position())	
+		current_block.set_position($BlockPosition.get_position())
+		# clamp vertical position before next process tick
+		global_position.y = clamp(global_position.y, canvas_top + current_block.box_width / 2, canvas_bottom - current_block.box_width / 2)
 	

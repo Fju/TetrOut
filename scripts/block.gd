@@ -9,8 +9,7 @@ var box_height
 var type
 var matrix
 var color
-var pos = Vector2()
-
+var group
 
 func _init(t, ghost=false):
 	# store type
@@ -22,12 +21,14 @@ func _init(t, ghost=false):
 	# note: this has no effect on blocks that have been added to the TetrisCanvas
 	color = tetrout.get_block_color(t) if !ghost else Color(1, 1, 1, 0.25)
 
+	# store in specific group for deleting nodes properly
+	group = 'blocks' if !ghost else 'ghost-blocks'
+	
+	add_to_group(group)
+	
 	update_size()
 
 func update_size():
-	redraw = true
-	
-	print(matrix)
 	height = len(matrix)
 	width = len(matrix[0])
 	
@@ -35,6 +36,9 @@ func update_size():
 	box_height = height * tetrout.TETRIS_BLOCK_SIZE
 	
 	set_size(Vector2(box_width, box_height))
+	
+	redraw = true
+	update()
 
 func set_position(pos):
 	""" override function, centers the object """
@@ -43,6 +47,18 @@ func set_position(pos):
 	
 	# call super function of inherited class
 	.set_position(pos)
+
+func get_global_position():
+	var pos = .get_global_position()
+	
+	#pos.x += box_height / 2
+	pos.y += box_width
+	
+	return pos
+
+func queue_kill():
+	remove_from_group(group)
+	add_to_group('free')
 
 func rotate():
 	""" rotates matrix by 90 degrees """	
@@ -60,8 +76,6 @@ func rotate():
 	matrix = m
 	update_size()
 
-func kill():
-	queue_free()
 
 var redraw = false
 func _draw():

@@ -32,7 +32,7 @@ const CYAN_COLOR = Color(0.2, 0.8, 0.9)
 const BLUE_COLOR = Color(0.2, 0.2, 1)
 const RED_COLOR = Color(1, 0.2, 0.2)
 const VIOLET_COLOR = Color(0.7, 0.2, 0.9)
-const MAGENTA_COLOR = Color(0.9, 0.2, 0.8)
+const MAGENTA_COLOR = Color(1.0, 0.2, 0.7)
 const YELLOW_COLOR = Color(0.9, 1, 0.2)
 
 # block matrixes, where first dimension is y (bottom first) and second dimension is x (left first)

@@ -13,8 +13,8 @@ extends Control
 const Block = preload("res://scripts/block.gd")
 
 
-var width = tetrout.TETRIS_BLOCK_SIZE * tetrout.TETRIS_COLUMNS
-var height = tetrout.TETRIS_BLOCK_SIZE * tetrout.TETRIS_ROWS
+var width = tetrout.TETRIS_BLOCK_SIZE * tetrout.TETRIS_ROWS
+var height = tetrout.TETRIS_BLOCK_SIZE * tetrout.TETRIS_COLUMNS
 
 # two dimensional array containing every item that should be displayed
 # each entry contains a specific type (e.g. red, yellow, etc. or empty)
@@ -31,21 +31,6 @@ func _ready():
 	# don't draw content out of the canvas rectangle area
 	set_clip_contents(true) 
 
-	
-	var bl = Block.new(tetrout.TETRIS_BLOCK_TYPES.RED)
-	var bt = Block.new(tetrout.TETRIS_BLOCK_TYPES.YELLOW)
-	var br = Block.new(tetrout.TETRIS_BLOCK_TYPES.MAGENTA)
-	#bl.rotate(1)
-	
-	add_block(bl, Vector2(0, 0))
-	
-	bl.rotate()
-	add_block(bl, Vector2(3, 0))
-	
-	add_block(bt, Vector2(5, 1))
-	
-	add_block(br, Vector2(4, 4))
-
 func clear_area():
 	""" utility function for clearing and re-initializing the 2d-array """
 	area = []
@@ -54,26 +39,34 @@ func clear_area():
 		for column in range(tetrout.TETRIS_COLUMNS):
 			area[row].append(tetrout.TETRIS_BLOCK_TYPES.EMPTY)
 
-func add_block(block, pos):
+func add_block(block):
 	""" adds each brick to the area according the block's matrix
 	Args:
 		block:	block object
-		pos:	Vector2 containing row and column where the block should be placed
-	"""
+	"""		
+	var anchor = get_global_position()
+	var block_pos = block.get_global_position()
+	
+	var pos = Vector2(tetrout.TETRIS_ROWS - (block_pos.y - anchor.y) / tetrout.TETRIS_BLOCK_SIZE, \
+						tetrout.TETRIS_COLUMNS - (block_pos.x - anchor.x) / tetrout.TETRIS_BLOCK_SIZE)					
+
 	for y in range(block.height):
 		for x in range(block.width):
 			# update area according to the area
 			if block.matrix[y][x] == 1:
-				area[pos.y+y][pos.x+x] = block.type
+				area[pos.y - block.height + y][pos.x + block.width - x - 1] = block.type
+				
+	redraw = true
+	update()
 
-func get_collision_row(block):
-	""" check at which column/height a block collides with other blocks or the ground
+func get_collision_row(block, column):
+	""" check at which row/height a block collides with other blocks or the ground
 	Args:
 		block:	block object
 	Returns:
 		h:		column/height of collision (0 if it collides with the ground)
 	"""
-	
+		
 	# TODO: starting at this height can cause a bug, where a block slides through another block, fix this!!
 	var h = tetrout.TETRIS_ROWS - 1 - block.height
 	while h >= 0:
@@ -81,7 +74,7 @@ func get_collision_row(block):
 		for y in range(block.height):
 			for x in range(block.width):
 				# whoever needs to debug this, have fun! :D
-				if area[h+y][block.pos.x+x] != tetrout.TETRIS_BLOCK_TYPES.EMPTY and block.matrix[y][block.width-x-1] == 1:
+				if area[h+y][column+x] != tetrout.TETRIS_BLOCK_TYPES.EMPTY and block.matrix[y][block.width-x-1] == 1:
 					valid = false
 					break
 
@@ -98,26 +91,23 @@ func get_collision_row(block):
 	# return column/height where the block would be placed
 	return h + 1
 
-func get_global_pos_of_block(block):
-	""" convert grid coordinates (row, column) to screen coordinates (global-x, global-y)
-	Args:
-		block:	block object (containing position and size information)
-	Returns:
-		pos:	converted position coordinates (Vector2)
-	"""
-	
-	# top-left point of canvas
+func get_ghost_block_position(block):
 	var anchor = get_global_position()
+	var block_pos = block.get_global_position()
 	
-	# converted coordinates, note that row index is equal to x-axis position not y-axis!!
-	var pos = Vector2(width - tetrout.TETRIS_BLOCK_SIZE * (block.pos.y + block.height), \
-						height - tetrout.TETRIS_BLOCK_SIZE * (block.pos.x + block.width))
+	var block_column = tetrout.TETRIS_COLUMNS - floor((block_pos.y - anchor.y) / tetrout.TETRIS_BLOCK_SIZE)
+	var block_row = get_collision_row(block, block_column)
+	
+	var pos = Vector2(width - tetrout.TETRIS_BLOCK_SIZE * (block_row + block.height), \
+						height - tetrout.TETRIS_BLOCK_SIZE * (block_column + block.width))
 	
 	# transform to the canvas' origin
 	pos.x += anchor.x
 	pos.y += anchor.y
+	
 	return pos
 	
+
 var redraw = true
 func _draw():
 	# don't redraw every time
