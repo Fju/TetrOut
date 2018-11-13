@@ -10,9 +10,6 @@ Description:
 
 extends Control
 
-const Block = preload("res://scripts/block.gd")
-
-
 var width = tetrout.TETRIS_BLOCK_SIZE * tetrout.TETRIS_ROWS
 var height = tetrout.TETRIS_BLOCK_SIZE * tetrout.TETRIS_COLUMNS
 
@@ -99,7 +96,7 @@ func get_ghost_block_position(block):
 	var block_row = get_collision_row(block, block_column)
 	
 	var pos = Vector2(width - tetrout.TETRIS_BLOCK_SIZE * (block_row + block.height), \
-						height - tetrout.TETRIS_BLOCK_SIZE * (block_column + block.width))
+						height - tetrout.TETRIS_BLOCK_SIZE * (block_column))
 	
 	# transform to the canvas' origin
 	pos.x += anchor.x

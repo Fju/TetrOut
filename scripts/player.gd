@@ -6,8 +6,6 @@ Description:
 
 extends Node2D
 
-var Block = preload("res://scripts/block.gd")
-
 # export variable can be edited in the edit
 export (float) var speed 
 export (float) var max_angle
@@ -30,7 +28,12 @@ func kill_current_block():
 	if current_block:
 		current_block.queue_free()
 		current_block = null
-	
+
+func clamp_vertically():
+	# clamp vertical position
+	var half_block_width = 0 if !current_block else current_block.box_width / 2
+	global_position.y = clamp(global_position.y, canvas_top + half_block_width, canvas_bottom - half_block_width)
+
 func _process(delta):
 	# go back to center position by default
 	desired_angle = 0
@@ -46,17 +49,9 @@ func _process(delta):
 		# player is not moving, play `idle` animation
 		$AnimatedSprite.play('idle')
 	
-	# obtain current position
-	var pos = get_global_position()
-	# add velocity vector to current position
-	pos += velocity * speed * delta
-	
-	var half_block_width = 0 if !current_block else current_block.box_width / 2
-	
-	# limit player's position vertically
-	pos.y = clamp(pos.y, canvas_top + half_block_width, canvas_bottom - half_block_width)
-	
-	set_global_position(pos)
+	# change variable directly, which simplifies code
+	global_position += velocity * speed * delta
+	clamp_vertically()
 	
 	# change angle incremantally, nice transition
 	if angle != desired_angle:
@@ -82,20 +77,22 @@ func set_current_block(type):
 	if current_block:
 		current_block.queue_free()
 	
-	current_block = Block.new(type)	
-	
+	current_block = blocks.new_block(type)
 	add_child(current_block)
 	current_block.set_position($BlockPosition.get_position())
+	
+	clamp_vertically()
 
 func get_current_block():
 	return current_block
 
-func rotate_block():	
+func turn_block():	
 	if current_block:
 		# rotate block
-		current_block.rotate()
+		current_block.turn()
 		# update position
 		current_block.set_position($BlockPosition.get_position())
-		# clamp vertical position before next process tick
-		global_position.y = clamp(global_position.y, canvas_top + current_block.box_width / 2, canvas_bottom - current_block.box_width / 2)
+		
+		clamp_vertically()
+		
 	
