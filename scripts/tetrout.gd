@@ -12,16 +12,12 @@ const TETRIS_COLUMNS = 14
 const INTERPOLATION_FLAG = 0
 const TEXTURE_FLAG = 0
 
-var block_texture
+var block_texture = preload("res://assets/blocks/single_block.png")
+
+
 
 func _ready():
-	block_texture = ImageTexture.new()
-	
-	var img = Image.new()
-	img.load("res://assets/blocks/single_block.png")
-	img.resize(TETRIS_BLOCK_SIZE, TETRIS_BLOCK_SIZE, INTERPOLATION_FLAG)
-	# create texture
-	block_texture.create_from_image(img, TEXTURE_FLAG)
+	block_texture.set_flags(TEXTURE_FLAG)
 
 
 # color scheme

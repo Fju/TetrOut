@@ -78,11 +78,14 @@ class Block extends Control:
 		var m_size = Vector2(len(m[0]), len(m))
 		
 		matrix = []
+		
+		print(rotation)
+		
 		if rot % 2 == 1:
 			for x in range(m_size.x):
 				var row = []
 				for y in range(m_size.y):
-					var item = m[m_size.y-y-1][x] if rot == 1 else m[y][x]
+					var item = m[m_size.y - y - 1][m_size.x - x - 1] if rot == 1 else m[y][x]
 					# add item to row
 					row.append(item)
 				# add row to matrix
@@ -91,7 +94,8 @@ class Block extends Control:
 			for y in range(m_size.y):
 				var row = []
 				for x in range(m_size.x):
-					var item = m[m_size.y-y-1][x] if rot == 2 else m[y][x]
+					#
+					var item = m[m_size.y - y - 1][m_size.x - x - 1] if rot == 2 else m[y][x]
 					# add item to row
 					row.append(item)
 				# add row to matrix

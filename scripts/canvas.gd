@@ -108,10 +108,7 @@ func get_ghost_block_position(block):
 var redraw = true
 func _draw():
 	# don't redraw every time
-	if !redraw:
-		return
-	
-	redraw = false
+
 	# highlight canvas area decently
 	draw_rect(Rect2(Vector2(0, 0), Vector2(width, height)), Color(1, 1, 1, 0.1), true)
 	

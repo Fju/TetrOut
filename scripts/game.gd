@@ -1,35 +1,33 @@
 extends Node
 
+
+
 var TetrisCanvas = preload("res://scripts/canvas.gd")
 
 var canvas
 var ghost_block
 var animated_block
 
+onready var viewport = get_viewport()
+
 var next_type
 
 func _ready():
+	viewport.connect("size_changed", self, "_on_viewport_size_changed")	
 	randomize()
 	
 	canvas = TetrisCanvas.new()
 	add_child(canvas)
 	
-	var canvas_size = canvas.get_size()
-	var canvas_pos = Vector2()
+	_on_viewport_size_changed()
 	
-	canvas_pos.x = tetrout.WINDOW_WIDTH - canvas_size.x
-	canvas_pos.y = (tetrout.WINDOW_HEIGHT - canvas_size.y) / 2
+	start_game()
 	
-	canvas.set_global_position(canvas_pos)
 	
-	$Player.canvas_top = canvas_pos.y
-	$Player.canvas_bottom = canvas_pos.y + canvas.height
-	
-	next_block()
-	next_block()
-	
-	print(next_type)
 
+func start_game():
+	next_block()
+	$NextBlockTimer.start()
 	
 func next_block():
 	if next_type:
@@ -38,8 +36,10 @@ func next_block():
 		ghost_block = blocks.new_ghost_block(next_type)
 		add_child(ghost_block)
 	
-	# skip first element (EMPTY)
+	# skip first element (EMPTY)	
 	next_type = int(1 + (len(tetrout.TETRIS_BLOCK_TYPES) - 1) * randf())
+	
+	#Controls/DebugLabel.set_text("hi")
 	
 func turn_block():
 	if ghost_block:
@@ -75,13 +75,11 @@ func _process(delta):
 			
 			animated_block = blocks.new_animated_block($Player.current_block.type)
 			animated_block.set_rotation($Player.current_block.rotation)
-			animated_block.set_animation($Player.current_block.get_global_position(), ghost_block.get_global_position(), 0.6)
+			animated_block.set_animation($Player.current_block.get_global_position(), ghost_block.get_global_position(), 0.4)
 			animated_block.connect("animation_end", self, "_on_AnimatedBlock_animation_end")
 			
-			add_child(animated_block)
-			
-			$Player.kill_current_block()					
-
+			add_child(animated_block)			
+			$Player.kill_current_block()
 
 
 func _on_AnimatedBlock_animation_end():
@@ -94,9 +92,6 @@ func _on_AnimatedBlock_animation_end():
 	# remove animated block from screen
 	animated_block.queue_free()
 	animated_block = null
-	
-	
-
 
 
 func _on_NextBlockTimer_timeout():
@@ -104,3 +99,22 @@ func _on_NextBlockTimer_timeout():
 	# generate next block
 	next_block()
 	
+func _on_viewport_size_changed():
+	var window_size = viewport.get_size_override()
+	
+	$Background.region_rect.end = window_size
+	
+	var canvas_size = canvas.get_size()	
+	var canvas_pos = Vector2()
+	
+	canvas_pos.x = window_size.x - canvas_size.x
+	canvas_pos.y = (window_size.y - canvas_size.y) / 2
+	
+	canvas.set_global_position(canvas_pos)
+	
+	$Player.canvas_top = canvas_pos.y
+	$Player.canvas_bottom = canvas_pos.y + canvas.height
+	
+	$Player.clamp_vertically()
+	
+		
