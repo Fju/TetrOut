@@ -16,6 +16,11 @@ var height = tetrout.TETRIS_BLOCK_SIZE * tetrout.TETRIS_COLUMNS
 # two dimensional array containing every item that should be displayed
 # each entry contains a specific type (e.g. red, yellow, etc. or empty)
 var area = []
+var rows_to_clear = []
+
+onready var ClearTimer = Timer.new()
+
+signal ready
 
 func _init():
 	# start with blank grid
@@ -26,7 +31,14 @@ func _ready():
 	set_size(Vector2(width, height))
 
 	# don't draw content out of the canvas rectangle area
-	set_clip_contents(true) 
+	set_clip_contents(true)
+	
+	#ClearTimer.set_timer_process_mode(Timer.TIMER_PROCESS_IDLE) 
+	ClearTimer.set_wait_time(0.15)
+	add_child(ClearTimer)
+	ClearTimer.connect('timeout', self, '_on_ClearTimer_timeout')
+	
+	
 
 func clear_area():
 	""" utility function for clearing and re-initializing the 2d-array """
@@ -52,10 +64,49 @@ func add_block(block):
 			# update area according to the area
 			if block.matrix[y][x] == 1:
 				area[pos.y - block.height + y][pos.x + block.width - x - 1] = block.type
-				
-	redraw = true
-	update()
+	
+	update()	
+	check_full_rows()
 
+	
+func check_full_rows():
+	# start from the top
+	var h = tetrout.TETRIS_ROWS
+	while h:
+		h -= 1
+		
+		var full = true
+		for x in range(tetrout.TETRIS_COLUMNS):
+			if area[h][x] == tetrout.TETRIS_BLOCK_TYPES.EMPTY:
+				# there is a gap, row is not completely full
+				full = false
+				break
+		
+		if full:
+			# row is full, add to array
+			rows_to_clear.append(h)
+	
+	if len(rows_to_clear) > 0:
+		# start timer for animation if there are rows to be cleared
+		ClearTimer.start()
+	else:
+		emit_signal('ready')
+	
+func clear_rows():
+	
+	for row in rows_to_clear:
+		# pull down rows one-by-one starting from the top
+		# not very efficient, but it works for now			
+		for y in range(row, tetrout.TETRIS_ROWS):
+			# set current row to the row above, except last row
+			# last row is set to be completely empty
+			for x in range(tetrout.TETRIS_COLUMNS):			
+				area[y][x] = area[y+1][x] if y < tetrout.TETRIS_ROWS - 1 else tetrout.TETRIS_BLOCK_TYPES.EMPTY
+	
+	# reset array
+	rows_to_clear = []
+			
+		
 func get_collision_row(block, column):
 	""" check at which row/height a block collides with other blocks or the ground
 	Args:
@@ -105,11 +156,8 @@ func get_ghost_block_position(block):
 	return pos
 	
 
-var redraw = true
 func _draw():
-	# don't redraw every time
-
-	# highlight canvas area decently
+	# highlight canvas area decently, for debugging
 	draw_rect(Rect2(Vector2(0, 0), Vector2(width, height)), Color(1, 1, 1, 0.1), true)
 	
 	for row in range(tetrout.TETRIS_ROWS):
@@ -122,5 +170,23 @@ func _draw():
 			# draw blocks
 			draw_texture(tetrout.block_texture, Vector2(x, y), tetrout.get_block_color(type))
 	
+	for row in rows_to_clear:
+		var color = Color(1, 1, 1, 0.8) if clear_animation_t % 2 == 0 else Color(0, 0, 0, 0)
+		
+		draw_rect(Rect2(width - (row + 1) * tetrout.TETRIS_BLOCK_SIZE, 0, tetrout.TETRIS_BLOCK_SIZE, height), color)
+
+var clear_animation_t = 0
+func _on_ClearTimer_timeout():
+	if clear_animation_t == 5:
+		ClearTimer.stop()
+		clear_animation_t = 0
+		clear_rows()
+		emit_signal('ready')
+	else:
+		clear_animation_t += 1
 	
+	update()	
+	
+	
+		
 	

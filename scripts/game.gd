@@ -1,7 +1,5 @@
 extends Node
 
-
-
 var TetrisCanvas = preload("res://scripts/canvas.gd")
 
 var canvas
@@ -11,12 +9,14 @@ var animated_block
 onready var viewport = get_viewport()
 
 var next_type
+var can_shoot = false
 
 func _ready():
 	viewport.connect("size_changed", self, "_on_viewport_size_changed")	
 	randomize()
 	
 	canvas = TetrisCanvas.new()
+	canvas.connect('ready', self, '_on_canvas_ready')
 	add_child(canvas)
 	
 	_on_viewport_size_changed()
@@ -35,8 +35,9 @@ func next_block():
 	
 		ghost_block = blocks.new_ghost_block(next_type)
 		add_child(ghost_block)
+		can_shoot = true
 	
-	# skip first element (EMPTY)	
+	# skip first element (EMPTY)
 	next_type = int(1 + (len(tetrout.TETRIS_BLOCK_TYPES) - 1) * randf())
 	
 	#Controls/DebugLabel.set_text("hi")
@@ -57,7 +58,7 @@ func _process(delta):
 	$Player.set_velocity(player_velocity)
 	
 	# check if timer is running to tell whether the player is allowed to shoot a block right now
-	if $NextBlockTimer.is_stopped():
+	if can_shoot:
 		
 		if Input.is_action_just_pressed('game_rotate_block'):
 			$Player.turn_block()
@@ -70,9 +71,7 @@ func _process(delta):
 		
 		
 		if Input.is_action_just_pressed('game_shoot_block'):
-			# start timer that permits the player to shoot new blocks for the next 750 ms
-			$NextBlockTimer.start()
-			
+			can_shoot = false
 			animated_block = blocks.new_animated_block($Player.current_block.type)
 			animated_block.set_rotation($Player.current_block.rotation)
 			animated_block.set_animation($Player.current_block.get_global_position(), ghost_block.get_global_position(), 0.4)
@@ -85,7 +84,6 @@ func _process(delta):
 func _on_AnimatedBlock_animation_end():
 	canvas.add_block(ghost_block)
 	
-	
 	# remove ghost from node tree ghost
 	ghost_block.queue_free()
 	ghost_block = null
@@ -93,9 +91,12 @@ func _on_AnimatedBlock_animation_end():
 	animated_block.queue_free()
 	animated_block = null
 
+func _on_canvas_ready():
+	# block has been set, start timer for next timer
+	$NextBlockTimer.start()
+
 
 func _on_NextBlockTimer_timeout():
-	$NextBlockTimer.stop()
 	# generate next block
 	next_block()
 	

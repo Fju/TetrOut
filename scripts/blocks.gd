@@ -79,8 +79,6 @@ class Block extends Control:
 		
 		matrix = []
 		
-		print(rotation)
-		
 		if rot % 2 == 1:
 			for x in range(m_size.x):
 				var row = []
@@ -151,7 +149,6 @@ class AnimatedBlock extends Block:
 		if finished:
 			return
 		
-		print(t)
 		if start_pos and desired_pos:
 			if t < 1:
 				t += delta / duration
