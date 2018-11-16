@@ -3,18 +3,16 @@ extends Node
 const WINDOW_WIDTH = 360
 const WINDOW_HEIGHT = 240
 
-const TETRIS_BLOCK_SIZE = 12
-enum TETRIS_BLOCK_TYPES { EMPTY, GREEN, CYAN, BLUE, RED, VIOLET, MAGENTA, YELLOW }
+const BLOCK_SIZE = 12
+enum BLOCK_TYPES { EMPTY, GREEN, CYAN, BLUE, RED, VIOLET, MAGENTA, YELLOW }
 
-const TETRIS_ROWS = 14
-const TETRIS_COLUMNS = 14
+const ROWS = 14
+const COLUMNS = 14
 
 const INTERPOLATION_FLAG = 0
 const TEXTURE_FLAG = 0
 
 var block_texture = preload("res://assets/blocks/single_block.png")
-
-
 
 func _ready():
 	block_texture.set_flags(TEXTURE_FLAG)
@@ -40,36 +38,55 @@ const YELLOW_MATRIX = [[1, 1], [1, 0], [1, 0]] #2x3
 
 static func get_block_matrix(type):
 	match type:
-		TETRIS_BLOCK_TYPES.GREEN:
+		BLOCK_TYPES.GREEN:
 			return GREEN_MATRIX
-		TETRIS_BLOCK_TYPES.CYAN:
+		BLOCK_TYPES.CYAN:
 			return CYAN_MATRIX
-		TETRIS_BLOCK_TYPES.BLUE:
+		BLOCK_TYPES.BLUE:
 			return BLUE_MATRIX
-		TETRIS_BLOCK_TYPES.RED:
+		BLOCK_TYPES.RED:
 			return RED_MATRIX
-		TETRIS_BLOCK_TYPES.VIOLET:
+		BLOCK_TYPES.VIOLET:
 			return VIOLET_MATRIX
-		TETRIS_BLOCK_TYPES.MAGENTA:
+		BLOCK_TYPES.MAGENTA:
 			return MAGENTA_MATRIX
-		TETRIS_BLOCK_TYPES.YELLOW:
+		BLOCK_TYPES.YELLOW:
 			return YELLOW_MATRIX
 
 static func get_block_color(type):
 	match type:
-		TETRIS_BLOCK_TYPES.GREEN:
+		BLOCK_TYPES.GREEN:
 			return GREEN_COLOR
-		TETRIS_BLOCK_TYPES.CYAN:
+		BLOCK_TYPES.CYAN:
 			return CYAN_COLOR
-		TETRIS_BLOCK_TYPES.BLUE:
+		BLOCK_TYPES.BLUE:
 			return BLUE_COLOR
-		TETRIS_BLOCK_TYPES.RED:
+		BLOCK_TYPES.RED:
 			return RED_COLOR
-		TETRIS_BLOCK_TYPES.VIOLET:
+		BLOCK_TYPES.VIOLET:
 			return VIOLET_COLOR
-		TETRIS_BLOCK_TYPES.MAGENTA:
+		BLOCK_TYPES.MAGENTA:
 			return MAGENTA_COLOR
-		TETRIS_BLOCK_TYPES.YELLOW:
+		BLOCK_TYPES.YELLOW:
 			return YELLOW_COLOR
 		_:
 			return Color(0, 0, 0, 0)
+
+static func get_block_name(type):
+	match type:
+		BLOCK_TYPES.GREEN:
+			return 'GreenBlock'
+		BLOCK_TYPES.CYAN:
+			return 'CyanBlock'
+		BLOCK_TYPES.BLUE:
+			return 'BlueBlock'
+		BLOCK_TYPES.RED:
+			return 'RedBlock'
+		BLOCK_TYPES.VIOLET:
+			return 'VioletBlock'
+		BLOCK_TYPES.MAGENTA:
+			return 'MagentaBlock'
+		BLOCK_TYPES.YELLOW:
+			return 'YellowBlock'
+		_:
+			return ''

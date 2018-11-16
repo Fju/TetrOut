@@ -16,7 +16,7 @@ func _ready():
 	randomize()
 	
 	canvas = TetrisCanvas.new()
-	canvas.connect('ready', self, '_on_canvas_ready')
+	canvas.connect('block_set', self, '_on_canvas_block_set')
 	add_child(canvas)
 	
 	_on_viewport_size_changed()
@@ -38,7 +38,7 @@ func next_block():
 		can_shoot = true
 	
 	# skip first element (EMPTY)
-	next_type = int(1 + (len(tetrout.TETRIS_BLOCK_TYPES) - 1) * randf())
+	next_type = int(1 + (len(tetrout.BLOCK_TYPES) - 1) * randf())
 	
 	#Controls/DebugLabel.set_text("hi")
 	
@@ -54,6 +54,9 @@ func _process(delta):
 	
 	if Input.is_action_pressed('game_move_player_down'):
 		player_velocity.y += 1
+		
+	if Input.is_action_pressed('debug_player_move_right'):
+		player_velocity.x += 2
 	
 	$Player.set_velocity(player_velocity)
 	
@@ -91,7 +94,7 @@ func _on_AnimatedBlock_animation_end():
 	animated_block.queue_free()
 	animated_block = null
 
-func _on_canvas_ready():
+func _on_canvas_block_set():
 	# block has been set, start timer for next timer
 	$NextBlockTimer.start()
 
@@ -103,7 +106,7 @@ func _on_NextBlockTimer_timeout():
 func _on_viewport_size_changed():
 	var window_size = viewport.get_size_override()
 	
-	$Background.region_rect.end = window_size
+	#$Background.region_rect.end = window_size
 	
 	var canvas_size = canvas.get_size()	
 	var canvas_pos = Vector2()
@@ -114,8 +117,14 @@ func _on_viewport_size_changed():
 	canvas.set_global_position(canvas_pos)
 	
 	$Player.canvas_top = canvas_pos.y
-	$Player.canvas_bottom = canvas_pos.y + canvas.height
+	$Player.canvas_bottom = canvas_pos.y + canvas.virtual_height
 	
 	$Player.clamp_vertically()
 	
 		
+
+
+func _on_Area2D_area_entered(area):
+	print('bruh')
+	pass # replace with function body
+

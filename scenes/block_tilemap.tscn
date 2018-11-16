@@ -1,0 +1,193 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/blocks/single_block.png" type="Texture" id=1]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+custom_solver_bias = 0.0
+extents = Vector2( 6, 6 )
+
+[node name="Node2D" type="Node2D"]
+
+[node name="GreenBlock" type="Sprite" parent="." index="0"]
+
+modulate = Color( 0, 1, 0, 1 )
+position = Vector2( 6, 6 )
+texture = ExtResource( 1 )
+_sections_unfolded = [ "Material", "Visibility" ]
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Area2D" type="Area2D" parent="GreenBlock" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GreenBlock/Area2D" index="0"]
+
+visible = false
+shape = SubResource( 1 )
+
+[node name="CyanBlock" type="Sprite" parent="." index="1"]
+
+editor/display_folded = true
+modulate = Color( 0.2, 0.8, 0.9, 1 )
+position = Vector2( 26, 6 )
+texture = ExtResource( 1 )
+_sections_unfolded = [ "Visibility" ]
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Area2D" type="Area2D" parent="CyanBlock" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CyanBlock/Area2D" index="0"]
+
+visible = false
+shape = SubResource( 1 )
+
+[node name="BlueBlock" type="Sprite" parent="." index="2"]
+
+editor/display_folded = true
+modulate = Color( 0.2, 0.2, 1, 1 )
+position = Vector2( 46, 6 )
+texture = ExtResource( 1 )
+_sections_unfolded = [ "Visibility" ]
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Area2D" type="Area2D" parent="BlueBlock" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BlueBlock/Area2D" index="0"]
+
+visible = false
+shape = SubResource( 1 )
+
+[node name="RedBlock" type="Sprite" parent="." index="3"]
+
+editor/display_folded = true
+modulate = Color( 1, 0.2, 0.2, 1 )
+position = Vector2( 66, 6 )
+texture = ExtResource( 1 )
+_sections_unfolded = [ "Visibility" ]
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Area2D" type="Area2D" parent="RedBlock" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RedBlock/Area2D" index="0"]
+
+visible = false
+shape = SubResource( 1 )
+
+[node name="VioletBlock" type="Sprite" parent="." index="4"]
+
+editor/display_folded = true
+modulate = Color( 0.7, 0.2, 0.9, 1 )
+position = Vector2( 86, 6 )
+texture = ExtResource( 1 )
+_sections_unfolded = [ "Visibility" ]
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Area2D" type="Area2D" parent="VioletBlock" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="VioletBlock/Area2D" index="0"]
+
+visible = false
+shape = SubResource( 1 )
+
+[node name="MagentaBlock" type="Sprite" parent="." index="5"]
+
+editor/display_folded = true
+modulate = Color( 1, 0.2, 0.7, 1 )
+position = Vector2( 106, 6 )
+texture = ExtResource( 1 )
+_sections_unfolded = [ "Visibility" ]
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Area2D" type="Area2D" parent="MagentaBlock" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MagentaBlock/Area2D" index="0"]
+
+visible = false
+shape = SubResource( 1 )
+
+[node name="YellowBlock" type="Sprite" parent="." index="6"]
+
+editor/display_folded = true
+modulate = Color( 0.9, 1, 0.2, 1 )
+position = Vector2( 126, 6 )
+texture = ExtResource( 1 )
+_sections_unfolded = [ "Visibility" ]
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Area2D" type="Area2D" parent="YellowBlock" index="0"]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="YellowBlock/Area2D" index="0"]
+
+visible = false
+shape = SubResource( 1 )
+
+

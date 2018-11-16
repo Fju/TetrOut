@@ -1,13 +1,26 @@
+""" Singleton for different block classes
+Author:			Florian Winkler (Fju)
+Created:		13.11.2018
+Description:
+	This script contains three different Block classes (two inherit from the base class `Block`).
+	- Block: base class, contains functionalities like rotating the block matrix or customized position setters/getters.
+	- GhostBlock: extends Block, is rendered in a translucent white color instead of a type specific color
+	- AnimatedBlock: extends Block, can play an animation where it "flies" from one point to another
+	Further more it contains static functions that return a new instance of a specific Block class
+"""
+
 extends Node
 
-
 static func new_block(type):
+	# create new `Block` instance
 	return Block.new(type)
 	
 static func new_ghost_block(type):
+	# create new `GhostBlock` instance
 	return GhostBlock.new(type)
 	
 static func new_animated_block(type):
+	# create new `AnimatedBlock` instance
 	return AnimatedBlock.new(type)
 
 
@@ -34,7 +47,6 @@ class Block extends Control:
 		# make transparent if it's a ghost block
 		# note: this has no effect on blocks that have been added to the TetrisCanvas
 		color = tetrout.get_block_color(type)
-		
 		rotation = 0
 		
 	
@@ -42,13 +54,16 @@ class Block extends Control:
 		height = len(matrix)
 		width = len(matrix[0])
 		
-		box_width = width * tetrout.TETRIS_BLOCK_SIZE
-		box_height = height * tetrout.TETRIS_BLOCK_SIZE
+		box_width = width * tetrout.BLOCK_SIZE
+		box_height = height * tetrout.BLOCK_SIZE
 		
 		set_size(Vector2(box_width, box_height))
 		
 		redraw = true
 		update()
+	
+	func get_block_name():
+		return tetrout.get_block_name(type)
 	
 	func set_position(pos, center=true):
 		""" override function, centers the object """
@@ -110,8 +125,8 @@ class Block extends Control:
 		""" draw function, renders all blocks """
 		for y in range(height):
 			for x in range(width):
-				var _x = (height - y - 1) * tetrout.TETRIS_BLOCK_SIZE
-				var _y = x * tetrout.TETRIS_BLOCK_SIZE
+				var _x = (height - y - 1) * tetrout.BLOCK_SIZE
+				var _y = x * tetrout.BLOCK_SIZE
 				
 				if matrix[y][x] == 1:
 					draw_texture(tetrout.block_texture, Vector2(_x, _y), color)

@@ -10,43 +10,55 @@ Description:
 
 extends Control
 
-var width = tetrout.TETRIS_BLOCK_SIZE * tetrout.TETRIS_ROWS
-var height = tetrout.TETRIS_BLOCK_SIZE * tetrout.TETRIS_COLUMNS
+
+var tileset_resource = preload("res://scenes/block_tilemap.res")
+var clear_animation_overlay = preload("res://scripts/clear_animation_overlay.gd")
+
+var virtual_width
+var virtual_height
 
 # two dimensional array containing every item that should be displayed
 # each entry contains a specific type (e.g. red, yellow, etc. or empty)
-var area = []
+#var area = []
 var rows_to_clear = []
 
 onready var ClearTimer = Timer.new()
+onready var Tilemap = TileMap.new()
+onready var ClearAnimationOverlay = clear_animation_overlay.new()
 
-signal ready
+signal block_set
+
 
 func _init():
-	# start with blank grid
-	clear_area()
+	virtual_width = tetrout.ROWS * tetrout.BLOCK_SIZE
+	virtual_height = tetrout.COLUMNS * tetrout.BLOCK_SIZE
+
 
 func _ready():
-	# adjust size of control
-	set_size(Vector2(width, height))
-
-	# don't draw content out of the canvas rectangle area
-	set_clip_contents(true)
+	set_size(Vector2(virtual_width, virtual_height))
+	
+	#set_clip_content(true)
 	
 	#ClearTimer.set_timer_process_mode(Timer.TIMER_PROCESS_IDLE) 
 	ClearTimer.set_wait_time(0.15)
-	add_child(ClearTimer)
 	ClearTimer.connect('timeout', self, '_on_ClearTimer_timeout')
-	
-	
+	Tilemap.set_tileset(tileset_resource)
+	Tilemap.set_cell_size(Vector2(tetrout.BLOCK_SIZE, tetrout.BLOCK_SIZE))
+		
+	add_child(ClearTimer)
+	add_child(Tilemap)
+	add_child(ClearAnimationOverlay)
 
-func clear_area():
-	""" utility function for clearing and re-initializing the 2d-array """
-	area = []
-	for row in range(tetrout.TETRIS_ROWS):
-		area.append([])
-		for column in range(tetrout.TETRIS_COLUMNS):
-			area[row].append(tetrout.TETRIS_BLOCK_TYPES.EMPTY)
+	for i in range(10):
+		set_cell(i, 0, int(randf() * 5))
+
+
+func set_cell(x, y, id):
+	Tilemap.set_cell(tetrout.ROWS - y - 1, tetrout.COLUMNS - x - 1, id)
+	
+func get_cell(x, y):
+	return Tilemap.get_cell(tetrout.ROWS - y - 1, tetrout.COLUMNS - x - 1)
+
 
 func add_block(block):
 	""" adds each brick to the area according the block's matrix
@@ -56,28 +68,29 @@ func add_block(block):
 	var anchor = get_global_position()
 	var block_pos = block.get_global_position()
 	
-	var pos = Vector2(tetrout.TETRIS_ROWS - (block_pos.y - anchor.y) / tetrout.TETRIS_BLOCK_SIZE, \
-						tetrout.TETRIS_COLUMNS - (block_pos.x - anchor.x) / tetrout.TETRIS_BLOCK_SIZE)					
-
+	var pos = Vector2(tetrout.COLUMNS - (block_pos.y - anchor.y) / tetrout.BLOCK_SIZE , \
+						tetrout.ROWS - (block_pos.x - anchor.x) / tetrout.BLOCK_SIZE)
+	print(pos)
 	for y in range(block.height):
 		for x in range(block.width):
 			# update area according to the area
 			if block.matrix[y][x] == 1:
-				area[pos.y - block.height + y][pos.x + block.width - x - 1] = block.type
+				var tile_id = Tilemap.tile_set.find_tile_by_name(block.get_block_name())
+				set_cell(pos.x + block.width - x - 1, pos.y + y - block.height, tile_id)
 	
-	update()	
 	check_full_rows()
+	update()
+	
 
 	
 func check_full_rows():
 	# start from the top
-	var h = tetrout.TETRIS_ROWS
+	var h = tetrout.ROWS
 	while h:
 		h -= 1
-		
 		var full = true
-		for x in range(tetrout.TETRIS_COLUMNS):
-			if area[h][x] == tetrout.TETRIS_BLOCK_TYPES.EMPTY:
+		for x in range(tetrout.COLUMNS):
+			if get_cell(x, h) == -1:
 				# there is a gap, row is not completely full
 				full = false
 				break
@@ -89,23 +102,25 @@ func check_full_rows():
 	if len(rows_to_clear) > 0:
 		# start timer for animation if there are rows to be cleared
 		ClearTimer.start()
+		ClearAnimationOverlay.rows = rows_to_clear
 	else:
-		emit_signal('ready')
+		emit_signal('block_set')
+		
+
 	
-func clear_rows():
-	
+func clear_rows():	
 	for row in rows_to_clear:
 		# pull down rows one-by-one starting from the top
 		# not very efficient, but it works for now			
-		for y in range(row, tetrout.TETRIS_ROWS):
+		for y in range(row, tetrout.ROWS):
 			# set current row to the row above, except last row
 			# last row is set to be completely empty
-			for x in range(tetrout.TETRIS_COLUMNS):			
-				area[y][x] = area[y+1][x] if y < tetrout.TETRIS_ROWS - 1 else tetrout.TETRIS_BLOCK_TYPES.EMPTY
-	
+			for x in range(tetrout.COLUMNS):
+				var tile_id = get_cell(x, y + 1)
+				set_cell(x, y, tile_id if y < tetrout.ROWS - 1 else -1)
 	# reset array
 	rows_to_clear = []
-			
+
 		
 func get_collision_row(block, column):
 	""" check at which row/height a block collides with other blocks or the ground
@@ -114,15 +129,15 @@ func get_collision_row(block, column):
 	Returns:
 		h:		column/height of collision (0 if it collides with the ground)
 	"""
-		
+
 	# TODO: starting at this height can cause a bug, where a block slides through another block, fix this!!
-	var h = tetrout.TETRIS_ROWS - 1 - block.height
+	var h = tetrout.ROWS - 1
 	while h >= 0:
 		var valid = true
 		for y in range(block.height):
 			for x in range(block.width):
-				# whoever needs to debug this, have fun! :D
-				if area[h+y][column+x] != tetrout.TETRIS_BLOCK_TYPES.EMPTY and block.matrix[y][block.width-x-1] == 1:
+				# whoever needs to debug this, have fun! :D				
+				if get_cell(column + block.width - x - 1, h + y) != -1 and block.matrix[y][x]:
 					valid = false
 					break
 
@@ -143,49 +158,39 @@ func get_ghost_block_position(block):
 	var anchor = get_global_position()
 	var block_pos = block.get_global_position()
 	
-	var block_column = tetrout.TETRIS_COLUMNS - floor((block_pos.y - anchor.y) / tetrout.TETRIS_BLOCK_SIZE)
+	var block_column = tetrout.COLUMNS - floor((block_pos.y - anchor.y) / tetrout.BLOCK_SIZE)
+	
+	
 	var block_row = get_collision_row(block, block_column)
 	
-	var pos = Vector2(width - tetrout.TETRIS_BLOCK_SIZE * (block_row + block.height), \
-						height - tetrout.TETRIS_BLOCK_SIZE * (block_column))
+	var pos = Vector2(anchor.x + virtual_width - tetrout.BLOCK_SIZE * (block_row + block.height), \
+						anchor.y + virtual_height - tetrout.BLOCK_SIZE * block_column)
 	
 	# transform to the canvas' origin
-	pos.x += anchor.x
-	pos.y += anchor.y
-	
 	return pos
-	
+
+
+func get_size():
+	return Vector2(virtual_width, virtual_height)
+
 
 func _draw():
 	# highlight canvas area decently, for debugging
-	draw_rect(Rect2(Vector2(0, 0), Vector2(width, height)), Color(1, 1, 1, 0.1), true)
+	draw_rect(Rect2(Vector2(0, 0), Vector2(virtual_width, virtual_height)), Color(1, 1, 1, 0.1), true)
 	
-	for row in range(tetrout.TETRIS_ROWS):
-		for column in range(tetrout.TETRIS_COLUMNS):
-			var type = area[row][column]
-
-			var x = height - tetrout.TETRIS_BLOCK_SIZE * (row + 1)
-			var y = width - tetrout.TETRIS_BLOCK_SIZE * (column + 1)
-
-			# draw blocks
-			draw_texture(tetrout.block_texture, Vector2(x, y), tetrout.get_block_color(type))
-	
-	for row in rows_to_clear:
-		var color = Color(1, 1, 1, 0.8) if clear_animation_t % 2 == 0 else Color(0, 0, 0, 0)
-		
-		draw_rect(Rect2(width - (row + 1) * tetrout.TETRIS_BLOCK_SIZE, 0, tetrout.TETRIS_BLOCK_SIZE, height), color)
 
 var clear_animation_t = 0
 func _on_ClearTimer_timeout():
+	ClearAnimationOverlay.t = clear_animation_t
+	ClearAnimationOverlay.update()
 	if clear_animation_t == 5:
 		ClearTimer.stop()
 		clear_animation_t = 0
 		clear_rows()
-		emit_signal('ready')
+		emit_signal('block_set')
 	else:
 		clear_animation_t += 1
-	
-	update()	
+
 	
 	
 		

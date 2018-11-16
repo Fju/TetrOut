@@ -1,3 +1,11 @@
+""" Container for touch screen controls
+Author:			Florian Winkler (Fju)
+Created:		14.11.2018
+Description:
+	This is a container node that contains four touch screen buttons.
+	It automatically sets their position and adapts to different screen sizes.
+"""
+
 extends Container
 
 const PADDING = 8
