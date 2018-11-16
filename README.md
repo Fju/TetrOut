@@ -9,7 +9,9 @@ This game was made for the yearly game jam Github GameOff in 2018. Our team cons
 
 ## Assets
 
-All visual assets were hand crafted by @Zombiefleischer except the touch controls. Those are from [kenney.nl](https://kenney.nl/assets/onscreen-controls).
+All visual assets were hand crafted by Max Schönleben except the touch controls. Those are from [kenney.nl](https://kenney.nl/assets/onscreen-controls).
+Assets made by Max Schönleben ([@Zombiefleischer](https://github.com/Zombiefleischer)) are licensed under the MIT License, feel free to use them but don't forget to give proper credit (...card, just kidding). A text file is located in the `assets/` directory. 
+
 
 ## Contributors
 
