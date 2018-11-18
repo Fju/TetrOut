@@ -7,10 +7,11 @@
 custom_solver_bias = 0.0
 extents = Vector2( 6, 6 )
 
-[node name="Node2D" type="Node2D"]
+[node name="Node2D" type="Node2D" index="0"]
 
 [node name="GreenBlock" type="Sprite" parent="." index="0"]
 
+editor/display_folded = true
 modulate = Color( 0, 1, 0, 1 )
 position = Vector2( 6, 6 )
 texture = ExtResource( 1 )
@@ -19,17 +20,18 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="Area2D" type="Area2D" parent="GreenBlock" index="0"]
+[node name="StaticBody2D" type="StaticBody2D" parent="GreenBlock" index="0"]
 
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
+editor/display_folded = true
+input_pickable = false
+collision_layer = 1
+collision_mask = 1
+constant_linear_velocity = Vector2( 0, 0 )
+constant_angular_velocity = 0.0
+friction = 1.0
+bounce = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GreenBlock/Area2D" index="0"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GreenBlock/StaticBody2D" index="0"]
 
 visible = false
 shape = SubResource( 1 )
@@ -45,17 +47,17 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="Area2D" type="Area2D" parent="CyanBlock" index="0"]
+[node name="StaticBody2D" type="StaticBody2D" parent="CyanBlock" index="0"]
 
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
+input_pickable = false
+collision_layer = 1
+collision_mask = 1
+constant_linear_velocity = Vector2( 0, 0 )
+constant_angular_velocity = 0.0
+friction = 1.0
+bounce = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CyanBlock/Area2D" index="0"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CyanBlock/StaticBody2D" index="0"]
 
 visible = false
 shape = SubResource( 1 )
@@ -71,17 +73,18 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="Area2D" type="Area2D" parent="BlueBlock" index="0"]
+[node name="StaticBody2D" type="StaticBody2D" parent="BlueBlock" index="0"]
 
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
+editor/display_folded = true
+input_pickable = false
+collision_layer = 1
+collision_mask = 1
+constant_linear_velocity = Vector2( 0, 0 )
+constant_angular_velocity = 0.0
+friction = 1.0
+bounce = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BlueBlock/Area2D" index="0"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BlueBlock/StaticBody2D" index="0"]
 
 visible = false
 shape = SubResource( 1 )
@@ -97,17 +100,17 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="Area2D" type="Area2D" parent="RedBlock" index="0"]
+[node name="StaticBody2D" type="StaticBody2D" parent="RedBlock" index="0"]
 
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
+input_pickable = false
+collision_layer = 1
+collision_mask = 1
+constant_linear_velocity = Vector2( 0, 0 )
+constant_angular_velocity = 0.0
+friction = 1.0
+bounce = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RedBlock/Area2D" index="0"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RedBlock/StaticBody2D" index="0"]
 
 visible = false
 shape = SubResource( 1 )
@@ -123,17 +126,17 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="Area2D" type="Area2D" parent="VioletBlock" index="0"]
+[node name="StaticBody2D" type="StaticBody2D" parent="VioletBlock" index="0"]
 
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
+input_pickable = false
+collision_layer = 1
+collision_mask = 1
+constant_linear_velocity = Vector2( 0, 0 )
+constant_angular_velocity = 0.0
+friction = 1.0
+bounce = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="VioletBlock/Area2D" index="0"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="VioletBlock/StaticBody2D" index="0"]
 
 visible = false
 shape = SubResource( 1 )
@@ -149,24 +152,23 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="Area2D" type="Area2D" parent="MagentaBlock" index="0"]
+[node name="StaticBody2D" type="StaticBody2D" parent="MagentaBlock" index="0"]
 
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
+input_pickable = false
+collision_layer = 1
+collision_mask = 1
+constant_linear_velocity = Vector2( 0, 0 )
+constant_angular_velocity = 0.0
+friction = 1.0
+bounce = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MagentaBlock/Area2D" index="0"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MagentaBlock/StaticBody2D" index="0"]
 
 visible = false
 shape = SubResource( 1 )
 
 [node name="YellowBlock" type="Sprite" parent="." index="6"]
 
-editor/display_folded = true
 modulate = Color( 0.9, 1, 0.2, 1 )
 position = Vector2( 126, 6 )
 texture = ExtResource( 1 )
@@ -175,17 +177,17 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="Area2D" type="Area2D" parent="YellowBlock" index="0"]
+[node name="StaticBody2D" type="StaticBody2D" parent="YellowBlock" index="0"]
 
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
+input_pickable = false
+collision_layer = 1
+collision_mask = 1
+constant_linear_velocity = Vector2( 0, 0 )
+constant_angular_velocity = 0.0
+friction = 1.0
+bounce = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="YellowBlock/Area2D" index="0"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="YellowBlock/StaticBody2D" index="0"]
 
 visible = false
 shape = SubResource( 1 )

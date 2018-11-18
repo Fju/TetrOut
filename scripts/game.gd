@@ -17,13 +17,13 @@ func _ready():
 	
 	canvas = TetrisCanvas.new()
 	canvas.connect('block_set', self, '_on_canvas_block_set')
+	#canvas.connect('exit_window', self, '_on_canvas_exit_window')
 	add_child(canvas)
 	
 	_on_viewport_size_changed()
 	
 	start_game()
-	
-	
+
 
 func start_game():
 	next_block()
@@ -39,8 +39,7 @@ func next_block():
 	
 	# skip first element (EMPTY)
 	next_type = int(1 + (len(tetrout.BLOCK_TYPES) - 1) * randf())
-	
-	#Controls/DebugLabel.set_text("hi")
+
 	
 func turn_block():
 	if ghost_block:
@@ -61,8 +60,7 @@ func _process(delta):
 	$Player.set_velocity(player_velocity)
 	
 	# check if timer is running to tell whether the player is allowed to shoot a block right now
-	if can_shoot:
-		
+	if can_shoot:		
 		if Input.is_action_just_pressed('game_rotate_block'):
 			$Player.turn_block()
 			turn_block()
@@ -82,7 +80,9 @@ func _process(delta):
 			
 			add_child(animated_block)			
 			$Player.kill_current_block()
-
+	
+	if Input.is_action_just_pressed('game_escape'):
+		get_tree().quit()
 
 func _on_AnimatedBlock_animation_end():
 	canvas.add_block(ghost_block)
@@ -120,11 +120,5 @@ func _on_viewport_size_changed():
 	$Player.canvas_bottom = canvas_pos.y + canvas.virtual_height
 	
 	$Player.clamp_vertically()
-	
-		
 
-
-func _on_Area2D_area_entered(area):
-	print('bruh')
-	pass # replace with function body
 

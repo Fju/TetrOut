@@ -20,6 +20,10 @@ var canvas_bottom = 0
 var velocity setget set_velocity, get_velocity
 var current_block setget set_current_block, get_current_block
 
+signal dead
+
+var is_dead = false
+
 func _ready():
 	# initialize variables with setters and getters
 	velocity = Vector2()
@@ -35,22 +39,31 @@ func clamp_vertically():
 	global_position.y = clamp(global_position.y, canvas_top + half_block_width, canvas_bottom - half_block_width)
 
 func _process(delta):
-	# go back to center position by default
-	desired_angle = 0
+	if is_dead:
+		return
+	
 	if velocity.length() > 0:
 		# player is moving, play `fly` animation
-		$AnimatedSprite.play('fly')
-		# check whether player is moving up or down
-		if velocity.y > 0:
-			desired_angle = max_angle # turn right
-		else:			
-			desired_angle = -max_angle # turn left
+		$AnimatedSprite.play('fly')		
 	else:
 		# player is not moving, play `idle` animation
 		$AnimatedSprite.play('idle')
+		
+	# desired angle depends on whether the player is moving up or down
+	# by default (no vertical movement) the desired angle will be set to zero
+	desired_angle = sign(velocity.y) * max_angle	
 	
-	# change variable directly, which simplifies code
-	global_position += velocity * speed * delta
+	# move and check for collisions
+	var collision = move_and_collide(velocity * speed * delta)	
+	if collision:
+		is_dead = true
+		emit_signal('dead')
+		# hide spaceship
+		$AnimatedSprite.set_visible(false)
+		# show explosion animation
+		$ExplosionEffect.set_visible(true)
+		$ExplosionEffect.play('explosion')
+
 	clamp_vertically()
 	
 	# change angle incremantally, nice transition
@@ -65,6 +78,8 @@ func _process(delta):
 	
 	# set rotation of sprite
 	$AnimatedSprite.set_rotation_degrees(90 + angle)
+	
+	print(get_global_position())
 
 # define setters and getters
 func set_velocity(val):

@@ -50,7 +50,7 @@ func _ready():
 	add_child(ClearAnimationOverlay)
 
 	for i in range(10):
-		set_cell(i, 0, int(randf() * 5))
+		set_cell(i, 0, 1)
 
 
 func set_cell(x, y, id):
