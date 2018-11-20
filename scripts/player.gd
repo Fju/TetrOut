@@ -25,6 +25,7 @@ signal dead
 signal level_completed
 
 var is_dead = false
+var completed = false
 
 func _ready():
 	# initialize variables with setters and getters
@@ -39,6 +40,12 @@ func clamp_vertically():
 	# clamp vertical position
 	var half_block_width = 0 if !current_block else current_block.box_width / 2
 	global_position.y = clamp(global_position.y, canvas_top + half_block_width, canvas_bottom - half_block_width)
+
+func new_level():
+	""" call this when there is a new level """
+	
+	#reset `completed` variable
+	completed = false
 
 func _process(delta):
 	if is_dead:
@@ -55,19 +62,6 @@ func _process(delta):
 	# by default (no vertical movement) the desired angle will be set to zero
 	desired_angle = sign(velocity.y) * max_angle	
 	
-	# move and check for collisions
-	var collision = move_and_collide(velocity * speed * delta)	
-	if collision:
-		is_dead = true
-		emit_signal('dead')
-		# hide spaceship
-		$AnimatedSprite.set_visible(false)
-		# show explosion animation
-		$ExplosionEffect.set_visible(true)
-		$ExplosionEffect.play('explosion')
-
-	clamp_vertically()
-	
 	# change angle incremantally, nice transition
 	if angle != desired_angle:
 		var angle_delta = sign(desired_angle - angle) * angular_velocity * delta
@@ -81,7 +75,22 @@ func _process(delta):
 	# set rotation of sprite
 	$AnimatedSprite.set_rotation_degrees(90 + angle)
 	
-	if global_position.x > canvas_right:
+	# move and check for collisions
+	var collision = move_and_collide(velocity * speed * delta)
+	clamp_vertically()
+	
+	if collision:
+		is_dead = true
+		emit_signal('dead')
+		# hide spaceship
+		$AnimatedSprite.set_visible(false)
+		# show explosion animation
+		$ExplosionEffect.set_visible(true)
+		$ExplosionEffect.play('explosion')
+	
+	if global_position.x > canvas_right and !completed:
+		# set `completed` to true, so that the event is fired only once (until `completed` is reset to false)
+		completed = true
 		emit_signal('level_completed')
 
 # define setters and getters

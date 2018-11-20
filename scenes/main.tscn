@@ -79,7 +79,7 @@ angular_velocity = 200.0
 rotation = 1.5708
 frames = SubResource( 1 )
 animation = "idle"
-frame = 2
+frame = 1
 playing = true
 _sections_unfolded = [ "Transform" ]
 

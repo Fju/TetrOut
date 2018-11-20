@@ -14,25 +14,33 @@ var can_shoot = false
 var level = 0
 
 func _ready():
-	viewport.connect("size_changed", self, "_on_viewport_size_changed")	
 	randomize()
 	
-	canvas = TetrisCanvas.new()
-	canvas.connect('block_set', self, '_on_canvas_block_set')
-	
-	#canvas.connect('exit_window', self, '_on_canvas_exit_window')
-	add_child(canvas)
+	viewport.connect("size_changed", self, "_on_viewport_size_changed")	
 	
 	$Player.connect('level_completed', self, '_on_Player_level_completed')
-	
-	_on_viewport_size_changed()
-	
+	$Player.connect('dead', self, '_on_Player_dead')
+	new_level()
 	start_game()
 
 
+func new_level():
+	level += 1
+
+	canvas = TetrisCanvas.new()
+	add_child(canvas)
+	
+	canvas.generate_level(0.1)	
+	canvas.connect('block_set', self, '_on_canvas_block_set')
+	
+	$Player.new_level()
+	
+	# call this function, so that the canvas' position is set correctly 
+	_on_viewport_size_changed()
+	
+	
 func start_game():
 	next_block()
-	canvas.generate_level()
 	$NextBlockTimer.start()
 	
 	
@@ -44,15 +52,10 @@ func next_block():
 		add_child(ghost_block)
 		can_shoot = true
 	
-	# skip first element (EMPTY)
+	# skip first element (which is tetrout.BLOCK_TYPES.EMPTY)
 	next_type = int(1 + (len(tetrout.BLOCK_TYPES) - 1) * randf())
 
 	
-func turn_block():
-	if ghost_block:
-		ghost_block.turn()
-		
-
 func _process(delta):	
 	var player_velocity = Vector2()
 	if Input.is_action_pressed('game_move_player_up'):
@@ -62,7 +65,7 @@ func _process(delta):
 		player_velocity.y += 1
 		
 	if Input.is_action_pressed('debug_player_move_right'):
-		player_velocity.x += 2
+		player_velocity.x += 2.5
 		#can_shoot = false
 	
 	$Player.set_velocity(player_velocity)
@@ -71,7 +74,7 @@ func _process(delta):
 	if can_shoot:
 		if Input.is_action_just_pressed('game_rotate_block'):
 			$Player.turn_block()
-			turn_block()
+			ghost_block.turn()
 	
 		if ghost_block:
 			# update ghost block's position if the player is allowed to shoot a block
@@ -107,14 +110,25 @@ func _on_canvas_block_set():
 	$NextBlockTimer.start()
 
 
+func _on_Player_dead():
+	print('wasted')
+
 func _on_Player_level_completed():
-	print('completed')
+	# delete completed canvas
+	canvas.queue_free()
+	canvas = null
+	
+	# next level
+	new_level()
 
 func _on_NextBlockTimer_timeout():
 	# generate next block
 	next_block()
 	
 func _on_viewport_size_changed():
+	if !canvas:
+		return
+	
 	var window_size = viewport.get_size_override()
 	
 	#$Background.region_rect.end = window_size
@@ -122,7 +136,8 @@ func _on_viewport_size_changed():
 	var canvas_size = canvas.get_size()	
 	var canvas_pos = Vector2()
 	
-	canvas_pos.x = level * 400 + window_size.x - canvas_size.x
+	# TODO: make 400 a constant with a reasonable name
+	canvas_pos.x = (level - 1) * 400 + window_size.x - canvas_size.x
 	canvas_pos.y = (window_size.y - canvas_size.y) / 2
 	
 	canvas.set_global_position(canvas_pos)
@@ -131,6 +146,5 @@ func _on_viewport_size_changed():
 	$Player.canvas_bottom = canvas_pos.y + canvas.virtual_height
 	$Player.canvas_right = canvas_pos.x + canvas.virtual_width
 	
+	# bounds of canvas may have change, adapt player position accordingly
 	$Player.clamp_vertically()
-
-
