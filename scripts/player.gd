@@ -16,11 +16,13 @@ var angle = 0
 
 var canvas_top = 0
 var canvas_bottom = 0
+var canvas_right = 0
 
 var velocity setget set_velocity, get_velocity
 var current_block setget set_current_block, get_current_block
 
 signal dead
+signal level_completed
 
 var is_dead = false
 
@@ -79,7 +81,8 @@ func _process(delta):
 	# set rotation of sprite
 	$AnimatedSprite.set_rotation_degrees(90 + angle)
 	
-	print(get_global_position())
+	if global_position.x > canvas_right:
+		emit_signal('level_completed')
 
 # define setters and getters
 func set_velocity(val):

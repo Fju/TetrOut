@@ -11,14 +11,19 @@ onready var viewport = get_viewport()
 var next_type
 var can_shoot = false
 
+var level = 0
+
 func _ready():
 	viewport.connect("size_changed", self, "_on_viewport_size_changed")	
 	randomize()
 	
 	canvas = TetrisCanvas.new()
 	canvas.connect('block_set', self, '_on_canvas_block_set')
+	
 	#canvas.connect('exit_window', self, '_on_canvas_exit_window')
 	add_child(canvas)
+	
+	$Player.connect('level_completed', self, '_on_Player_level_completed')
 	
 	_on_viewport_size_changed()
 	
@@ -27,7 +32,9 @@ func _ready():
 
 func start_game():
 	next_block()
+	canvas.generate_level()
 	$NextBlockTimer.start()
+	
 	
 func next_block():
 	if next_type:
@@ -56,11 +63,12 @@ func _process(delta):
 		
 	if Input.is_action_pressed('debug_player_move_right'):
 		player_velocity.x += 2
+		#can_shoot = false
 	
 	$Player.set_velocity(player_velocity)
 	
 	# check if timer is running to tell whether the player is allowed to shoot a block right now
-	if can_shoot:		
+	if can_shoot:
 		if Input.is_action_just_pressed('game_rotate_block'):
 			$Player.turn_block()
 			turn_block()
@@ -99,6 +107,9 @@ func _on_canvas_block_set():
 	$NextBlockTimer.start()
 
 
+func _on_Player_level_completed():
+	print('completed')
+
 func _on_NextBlockTimer_timeout():
 	# generate next block
 	next_block()
@@ -111,13 +122,14 @@ func _on_viewport_size_changed():
 	var canvas_size = canvas.get_size()	
 	var canvas_pos = Vector2()
 	
-	canvas_pos.x = window_size.x - canvas_size.x
+	canvas_pos.x = level * 400 + window_size.x - canvas_size.x
 	canvas_pos.y = (window_size.y - canvas_size.y) / 2
 	
 	canvas.set_global_position(canvas_pos)
 	
 	$Player.canvas_top = canvas_pos.y
 	$Player.canvas_bottom = canvas_pos.y + canvas.virtual_height
+	$Player.canvas_right = canvas_pos.x + canvas.virtual_width
 	
 	$Player.clamp_vertically()
 
