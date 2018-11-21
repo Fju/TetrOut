@@ -10,53 +10,75 @@ onready var viewport = get_viewport()
 
 var next_type
 var can_shoot = false
+var can_go_right = true
 
+
+var desired_x = 0
 var level = 0
 
 func _ready():
 	randomize()
 	
 	viewport.connect("size_changed", self, "_on_viewport_size_changed")	
-	
-	$Player.connect('level_completed', self, '_on_Player_level_completed')
-	$Player.connect('dead', self, '_on_Player_dead')
+	$Player.connect('dead', self, '_on_Player_dead')	
 	new_level()
-	start_game()
 
 
 func new_level():
+	# TODO: sort and documentate!
+	can_go_right = true
+	
+	# show current level number
 	level += 1
-
+	$GUI/Label.set_text("Level: %d" % level)	
+	
+	if canvas:
+		# delete completed canvas
+		canvas.queue_free()
+		canvas = null
+	
 	canvas = TetrisCanvas.new()
 	add_child(canvas)
 	
-	canvas.generate_level(0.1)	
+	canvas.generate_level(0.5)
 	canvas.connect('block_set', self, '_on_canvas_block_set')
-	
-	$Player.new_level()
 	
 	# call this function, so that the canvas' position is set correctly 
 	_on_viewport_size_changed()
 	
-	
-func start_game():
-	next_block()
+	# after this interval the player gets a random block that can be placed
 	$NextBlockTimer.start()
 	
-	
 func next_block():
-	if next_type:
-		$Player.set_current_block(next_type)
+	# TODO: make separate function for randomly choosing a block
+	if !next_type:
+		next_type = int(1 + (len(tetrout.BLOCK_TYPES) - 1) * randf())
 	
-		ghost_block = blocks.new_ghost_block(next_type)
-		add_child(ghost_block)
-		can_shoot = true
+	$Player.set_current_block(next_type)
+
+	ghost_block = blocks.new_ghost_block(next_type)
+	add_child(ghost_block)
+	can_shoot = true
 	
 	# skip first element (which is tetrout.BLOCK_TYPES.EMPTY)
 	next_type = int(1 + (len(tetrout.BLOCK_TYPES) - 1) * randf())
 
+func start_go_right():
+	can_go_right = false
+	can_shoot = false
+	
+	# hide ghost block and current block, but don't delete them
+	ghost_block.queue_free()
+	ghost_block = null
+	
+	$Player.kill_current_block()	
+	desired_x = (level) * 400 + 60
+
 	
 func _process(delta):	
+	if Input.is_action_just_pressed('debug_player_move_right') and can_go_right and can_shoot:
+		start_go_right()
+
 	var player_velocity = Vector2()
 	if Input.is_action_pressed('game_move_player_up'):
 		player_velocity.y -= 1
@@ -64,11 +86,15 @@ func _process(delta):
 	if Input.is_action_pressed('game_move_player_down'):
 		player_velocity.y += 1
 		
-	if Input.is_action_pressed('debug_player_move_right'):
-		player_velocity.x += 2.5
-		#can_shoot = false
-	
-	$Player.set_velocity(player_velocity)
+	if !can_go_right:
+		if desired_x > $Player.get_global_position().x:
+			player_velocity.x += 3
+		else:
+			# fix Player's position to the desired x position
+			$Player.global_position.x = desired_x	
+			new_level()
+		
+	$Player.set_velocity(player_velocity)	
 	
 	# check if timer is running to tell whether the player is allowed to shoot a block right now
 	if can_shoot:
@@ -113,13 +139,9 @@ func _on_canvas_block_set():
 func _on_Player_dead():
 	print('wasted')
 
-func _on_Player_level_completed():
-	# delete completed canvas
-	canvas.queue_free()
-	canvas = null
-	
+func _on_Player_level_completed():	
 	# next level
-	new_level()
+	pass
 
 func _on_NextBlockTimer_timeout():
 	# generate next block
@@ -131,13 +153,14 @@ func _on_viewport_size_changed():
 	
 	var window_size = viewport.get_size_override()
 	
-	#$Background.region_rect.end = window_size
+	# adapt background size, so that it covers the whole screen
+	$BackgroundLayer/Background.region_rect.size = window_size
 	
 	var canvas_size = canvas.get_size()	
 	var canvas_pos = Vector2()
 	
 	# TODO: make 400 a constant with a reasonable name
-	canvas_pos.x = (level - 1) * 400 + window_size.x - canvas_size.x
+	canvas_pos.x = (level-1) * 400 + window_size.x - canvas_size.x
 	canvas_pos.y = (window_size.y - canvas_size.y) / 2
 	
 	canvas.set_global_position(canvas_pos)

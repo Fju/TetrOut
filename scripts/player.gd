@@ -22,10 +22,8 @@ var velocity setget set_velocity, get_velocity
 var current_block setget set_current_block, get_current_block
 
 signal dead
-signal level_completed
 
 var is_dead = false
-var completed = false
 
 func _ready():
 	# initialize variables with setters and getters
@@ -40,13 +38,7 @@ func clamp_vertically():
 	# clamp vertical position
 	var half_block_width = 0 if !current_block else current_block.box_width / 2
 	global_position.y = clamp(global_position.y, canvas_top + half_block_width, canvas_bottom - half_block_width)
-
-func new_level():
-	""" call this when there is a new level """
 	
-	#reset `completed` variable
-	completed = false
-
 func _process(delta):
 	if is_dead:
 		return
@@ -88,11 +80,6 @@ func _process(delta):
 		$ExplosionEffect.set_visible(true)
 		$ExplosionEffect.play('explosion')
 	
-	if global_position.x > canvas_right and !completed:
-		# set `completed` to true, so that the event is fired only once (until `completed` is reset to false)
-		completed = true
-		emit_signal('level_completed')
-
 # define setters and getters
 func set_velocity(val):
 	velocity = val
