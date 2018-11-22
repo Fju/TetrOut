@@ -72,17 +72,24 @@ func _process(delta):
 	$AnimatedSprite.set_rotation_degrees(90 + angle)
 	
 	# move and check for collisions
-	var collision = move_and_collide(velocity * speed * delta)
-	clamp_vertically()
-	
+	var collision = move_and_collide(velocity * speed * delta)	
 	if collision:
-		is_dead = true
-		emit_signal('dead')
-		# hide spaceship
-		$AnimatedSprite.set_visible(false)
-		# show explosion animation
-		$ExplosionEffect.set_visible(true)
-		$ExplosionEffect.play('explosion')
+		# a collision object was returned
+		if collision.normal.x == -1:
+			# player collides frontally
+			is_dead = true
+			emit_signal('dead')
+			# hide spaceship
+			$AnimatedSprite.set_visible(false)
+			# show explosion animation
+			$ExplosionEffect.set_visible(true)
+			$ExplosionEffect.play('explosion')
+		else:
+			# player doesn't collide frontally, keep moving
+			# note: move_and_slide automatically multiplies `delta`
+			move_and_slide(velocity * speed)
+
+	clamp_vertically()
 	
 # define setters and getters
 func set_velocity(val):

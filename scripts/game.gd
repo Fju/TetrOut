@@ -75,7 +75,6 @@ func start_go_right():
 
 	
 func _process(delta):
-	print($Player.global_position.x)
 	if Input.is_action_just_pressed('game_move_player_right') and can_go_right and can_shoot:
 		start_go_right()
 
@@ -88,7 +87,7 @@ func _process(delta):
 		
 	if !can_go_right:
 		if desired_x > $Player.get_global_position().x:
-			player_velocity.x += 3.2
+			player_velocity.x += 1.5
 		else:
 			# fix Player's position to the desired x position
 			_on_viewport_size_changed()
