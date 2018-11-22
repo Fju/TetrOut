@@ -186,10 +186,6 @@ func get_ghost_block_position(block):
 	return pos
 
 
-func get_size():
-	return Vector2(virtual_width, virtual_height)
-
-
 func _draw():
 	# highlight canvas area decently, for debugging
 	draw_rect(Rect2(Vector2(0, 0), Vector2(virtual_width, virtual_height)), Color(1, 1, 1, 0.1), true)

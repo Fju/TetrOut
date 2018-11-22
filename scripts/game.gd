@@ -17,8 +17,7 @@ var desired_x = 0
 var level = 0
 
 func _ready():
-	randomize()
-	
+	randomize()	
 	viewport.connect("size_changed", self, "_on_viewport_size_changed")	
 	$Player.connect('dead', self, '_on_Player_dead')	
 	new_level()
@@ -30,7 +29,7 @@ func new_level():
 	
 	# show current level number
 	level += 1
-	$GUI/Label.set_text("Level: %d" % level)	
+	$GUI/Label.set_text("Level: %d" % level)
 	
 	if canvas:
 		# delete completed canvas
@@ -40,7 +39,7 @@ func new_level():
 	canvas = TetrisCanvas.new()
 	add_child(canvas)
 	
-	canvas.generate_level(0.5)
+	canvas.generate_level(0.1)
 	canvas.connect('block_set', self, '_on_canvas_block_set')
 	
 	# call this function, so that the canvas' position is set correctly 
@@ -72,11 +71,12 @@ func start_go_right():
 	ghost_block = null
 	
 	$Player.kill_current_block()	
-	desired_x = (level) * 400 + 60
+	_on_viewport_size_changed()
 
 	
-func _process(delta):	
-	if Input.is_action_just_pressed('debug_player_move_right') and can_go_right and can_shoot:
+func _process(delta):
+	print($Player.global_position.x)
+	if Input.is_action_just_pressed('game_move_player_right') and can_go_right and can_shoot:
 		start_go_right()
 
 	var player_velocity = Vector2()
@@ -88,10 +88,10 @@ func _process(delta):
 		
 	if !can_go_right:
 		if desired_x > $Player.get_global_position().x:
-			player_velocity.x += 3
+			player_velocity.x += 3.2
 		else:
 			# fix Player's position to the desired x position
-			$Player.global_position.x = desired_x	
+			_on_viewport_size_changed()
 			new_level()
 		
 	$Player.set_velocity(player_velocity)	
@@ -135,13 +135,8 @@ func _on_canvas_block_set():
 	# block has been set, start timer for next timer
 	$NextBlockTimer.start()
 
-
 func _on_Player_dead():
 	print('wasted')
-
-func _on_Player_level_completed():	
-	# next level
-	pass
 
 func _on_NextBlockTimer_timeout():
 	# generate next block
@@ -156,14 +151,21 @@ func _on_viewport_size_changed():
 	# adapt background size, so that it covers the whole screen
 	$BackgroundLayer/Background.region_rect.size = window_size
 	
-	var canvas_size = canvas.get_size()	
+	var canvas_size = canvas.get_size()
 	var canvas_pos = Vector2()
 	
 	# TODO: make 400 a constant with a reasonable name
-	canvas_pos.x = (level-1) * 400 + window_size.x - canvas_size.x
+	canvas_pos.x = level * window_size.x - canvas_size.x
 	canvas_pos.y = (window_size.y - canvas_size.y) / 2
 	
 	canvas.set_global_position(canvas_pos)
+	
+	if can_go_right:
+		$Player.global_position.x = (level-1) * window_size.x + 60
+	else:
+		desired_x = level * window_size.x + 60
+	
+	$Player.set_camera_offset(window_size.x / 2 - 60)
 	
 	$Player.canvas_top = canvas_pos.y
 	$Player.canvas_bottom = canvas_pos.y + canvas.virtual_height

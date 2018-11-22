@@ -1,12 +1,13 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://scripts/controls.gd" type="Script" id=1]
 [ext_resource path="res://assets/touch_controls/up.png" type="Texture" id=2]
 [ext_resource path="res://assets/touch_controls/down.png" type="Texture" id=3]
 [ext_resource path="res://assets/touch_controls/rotate.png" type="Texture" id=4]
 [ext_resource path="res://assets/touch_controls/fire.png" type="Texture" id=5]
+[ext_resource path="res://assets/touch_controls/right.png" type="Texture" id=6]
 
-[node name="CanvasLayer" type="CanvasLayer"]
+[node name="CanvasLayer" type="CanvasLayer" index="0"]
 
 layer = 2
 offset = Vector2( 0, 0 )
@@ -87,6 +88,21 @@ shape_centered = true
 shape_visible = true
 passby_press = false
 action = "game_shoot_block"
+visibility_mode = 1
+_sections_unfolded = [ "Transform" ]
+
+[node name="TouchButtonRight" type="TouchScreenButton" parent="Controls" index="4"]
+
+position = Vector2( 92, 192 )
+scale = Vector2( 0.375, 0.375 )
+normal = ExtResource( 6 )
+pressed = null
+bitmask = null
+shape = null
+shape_centered = true
+shape_visible = true
+passby_press = false
+action = "game_move_player_right"
 visibility_mode = 1
 _sections_unfolded = [ "Transform" ]
 

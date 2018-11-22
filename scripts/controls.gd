@@ -22,6 +22,7 @@ func _on_viewport_size_changed():
 
 	$TouchButtonUp.set_position(Vector2(PADDING, window_size.y - 2*BUTTON_SIZE - 2*PADDING))
 	$TouchButtonDown.set_position(Vector2(PADDING, window_size.y - BUTTON_SIZE - PADDING))
+	$TouchButtonRight.set_position(Vector2(BUTTON_SIZE + 2*PADDING, window_size.y - BUTTON_SIZE - PADDING))
 
 	$TouchButtonFire.set_position(Vector2(window_size.x - BUTTON_SIZE - PADDING, window_size.y - BUTTON_SIZE - PADDING))
 	$TouchButtonRotate.set_position(Vector2(window_size.x - 2*BUTTON_SIZE - 3*PADDING, window_size.y - BUTTON_SIZE - PADDING))

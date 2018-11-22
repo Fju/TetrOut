@@ -38,6 +38,10 @@ func clamp_vertically():
 	# clamp vertical position
 	var half_block_width = 0 if !current_block else current_block.box_width / 2
 	global_position.y = clamp(global_position.y, canvas_top + half_block_width, canvas_bottom - half_block_width)
+
+func set_camera_offset(val):
+	$Camera2D.set_offset(Vector2(val, 0))
+	$Camera2D.limit_left = -val
 	
 func _process(delta):
 	if is_dead:
