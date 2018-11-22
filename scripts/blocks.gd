@@ -64,6 +64,9 @@ class Block extends Control:
 	
 	func get_block_name():
 		return tetrout.get_block_name(type)
+		
+	func get_block_score():
+		return tetrout.get_block_score(type)
 	
 	func set_position(pos, center=true):
 		""" override function, centers the object """

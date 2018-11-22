@@ -36,6 +36,15 @@ const VIOLET_MATRIX = [[0, 1, 1], [1, 1, 0]] #3x2
 const MAGENTA_MATRIX = [[1, 1], [0, 1], [0, 1]] #2x3
 const YELLOW_MATRIX = [[1, 1], [1, 0], [1, 0]] #2x3
 
+# score of placing a specific block
+const GREEN_SCORE = 2
+const CYAN_SCORE = 3
+const BLUE_SCORE = 1
+const RED_SCORE = 5
+const VIOLET_SCORE = 5
+const MAGENTA_SCORE = 4
+const YELLOW_SCORE = 4
+
 static func get_block_matrix(type):
 	match type:
 		BLOCK_TYPES.GREEN:
@@ -71,6 +80,25 @@ static func get_block_color(type):
 			return YELLOW_COLOR
 		_:
 			return Color(0, 0, 0, 0)
+
+static func get_block_score(type):
+	match type:
+		BLOCK_TYPES.GREEN:
+			return GREEN_SCORE
+		BLOCK_TYPES.CYAN:
+			return CYAN_SCORE
+		BLOCK_TYPES.BLUE:
+			return BLUE_SCORE
+		BLOCK_TYPES.RED:
+			return RED_SCORE
+		BLOCK_TYPES.VIOLET:
+			return VIOLET_SCORE
+		BLOCK_TYPES.MAGENTA:
+			return MAGENTA_SCORE
+		BLOCK_TYPES.YELLOW:
+			return YELLOW_SCORE
+		_:
+			return 0
 
 static func get_block_name(type):
 	match type:

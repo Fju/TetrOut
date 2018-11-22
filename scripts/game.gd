@@ -15,6 +15,7 @@ var can_go_right = true
 
 var desired_x = 0
 var level = 0
+var score = 0
 
 func _ready():
 	randomize()	
@@ -24,12 +25,15 @@ func _ready():
 
 
 func new_level():
+	if level > 0:
+		_on_canvas_scored(100)
+	
 	# TODO: sort and documentate!
 	can_go_right = true
 	
 	# show current level number
 	level += 1
-	$GUI/Label.set_text("Level: %d" % level)
+	$GUI/LevelLabel.set_text("Level: %d" % level)
 	
 	if canvas:
 		# delete completed canvas
@@ -41,6 +45,7 @@ func new_level():
 	
 	canvas.generate_level(0.1)
 	canvas.connect('block_set', self, '_on_canvas_block_set')
+	canvas.connect('scored', self, '_on_canvas_scored')
 	
 	# call this function, so that the canvas' position is set correctly 
 	_on_viewport_size_changed()
@@ -87,7 +92,7 @@ func _process(delta):
 		
 	if !can_go_right:
 		if desired_x > $Player.get_global_position().x:
-			player_velocity.x += 1.5
+			player_velocity.x += 3.2
 		else:
 			# fix Player's position to the desired x position
 			_on_viewport_size_changed()
@@ -133,6 +138,10 @@ func _on_AnimatedBlock_animation_end():
 func _on_canvas_block_set():
 	# block has been set, start timer for next timer
 	$NextBlockTimer.start()
+
+func _on_canvas_scored(s):
+	score += s	
+	$GUI/ScoreLabel.set_text("Score: %d" % score)
 
 func _on_Player_dead():
 	print('wasted')

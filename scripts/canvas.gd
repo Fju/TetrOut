@@ -17,9 +17,6 @@ var clear_animation_overlay = preload("res://scripts/clear_animation_overlay.gd"
 var virtual_width
 var virtual_height
 
-# two dimensional array containing every item that should be displayed
-# each entry contains a specific type (e.g. red, yellow, etc. or empty)
-#var area = []
 var rows_to_clear = []
 
 onready var ClearTimer = Timer.new()
@@ -27,6 +24,7 @@ onready var Tilemap = TileMap.new()
 onready var ClearAnimationOverlay = clear_animation_overlay.new()
 
 signal block_set
+signal scored
 
 
 func _init():
@@ -94,10 +92,11 @@ func add_block(block):
 				var tile_id = Tilemap.tile_set.find_tile_by_name(block.get_block_name())
 				set_cell(pos.x + block.width - x - 1, pos.y + y - block.height, tile_id)
 	
+	emit_signal('scored', block.get_block_score())
+		
 	check_full_rows()
 	update()
 	
-
 	
 func check_full_rows():
 	# start from the top
@@ -134,6 +133,10 @@ func clear_rows():
 			for x in range(tetrout.COLUMNS):
 				var tile_id = get_cell(x, y + 1)
 				set_cell(x, y, tile_id if y < tetrout.ROWS - 1 else -1)
+
+	# increase score for every row that will be cleared
+	emit_signal('scored', tetrout.COLUMNS * len(rows_to_clear))
+	
 	# reset array
 	rows_to_clear = []
 
