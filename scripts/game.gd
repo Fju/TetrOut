@@ -80,6 +80,10 @@ func start_go_right():
 
 	
 func _process(delta):
+	
+	if Input.is_action_just_pressed('debug_key'):
+		$WastedEffect.play()
+	
 	if Input.is_action_just_pressed('game_move_player_right') and can_go_right and can_shoot:
 		start_go_right()
 

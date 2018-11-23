@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://scripts/game.gd" type="Script" id=1]
 [ext_resource path="res://assets/background.png" type="Texture" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://assets/ship/ship5.png" type="Texture" id=8]
 [ext_resource path="res://scenes/explosion_effect.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/touch_screen_controls.tscn" type="PackedScene" id=10]
+[ext_resource path="res://scenes/wasted_effect.tscn" type="PackedScene" id=11]
 
 [sub_resource type="SpriteFrames" id=1]
 
@@ -30,7 +31,7 @@ animations = [ {
 custom_solver_bias = 0.0
 extents = Vector2( 16, 12 )
 
-[node name="World" type="Node" index="0"]
+[node name="World" type="Node"]
 
 script = ExtResource( 1 )
 
@@ -78,7 +79,6 @@ angular_velocity = 200.0
 rotation = 1.5708
 frames = SubResource( 1 )
 animation = "idle"
-frame = 2
 playing = true
 _sections_unfolded = [ "Transform" ]
 
@@ -127,9 +127,12 @@ _sections_unfolded = [ "Transform", "Visibility" ]
 
 [node name="TouchScreenLayer" parent="." index="3" instance=ExtResource( 10 )]
 
+layer = 1
+
 [node name="GUI" type="CanvasLayer" parent="." index="4"]
 
-layer = 3
+editor/display_folded = true
+layer = 1
 offset = Vector2( 0, 0 )
 rotation = 0.0
 scale = Vector2( 1, 1 )
@@ -174,6 +177,10 @@ text = "Lvel : 2"
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
+
+[node name="WastedEffect" parent="." index="5" instance=ExtResource( 11 )]
+
+layer = 2
 
 [connection signal="timeout" from="NextBlockTimer" to="." method="_on_NextBlockTimer_timeout"]
 
