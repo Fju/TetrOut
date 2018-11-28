@@ -10,8 +10,11 @@ This game was made for the yearly game jam Github GameOff in 2018. Our team cons
 ## Assets
 
 Touch screen controls were created by [kenney.nl](https://kenney.nl/assets/onscreen-controls). The artwork for the explosion effect was created by by Luis Zuno (@ansimuz).
-All other assets were made by Max Schönleben ([@Zombiefleischer](https://github.com/Zombiefleischer)) and are licensed under the MIT License, feel free to use them but don't forget to give proper credit (...card, just kidding). A text file is located in the `assets/` directory. 
+All other assets were made by Max Schönleben ([@Zombiefleischer](https://github.com/Zombiefleischer)) and are licensed under the MIT License, feel free to use them but don't forget to give proper credit (...card, just kidding). A text file is located in the `assets/` directory.
 
+## Audio
+
+The background music is called "Paradox #2" by Dubmood (slowed down by 10%). Unfortunately I couldn't find any information about the sond's license, but this will be fixed as soon as possible!
 
 ## Contributors
 
