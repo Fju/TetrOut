@@ -29,6 +29,27 @@ func _ready():
 	# initialize variables with setters and getters
 	velocity = Vector2()
 
+func restart():
+	is_dead = false
+	stop_death_animation()
+
+func play_death_animation():
+	# hide spaceship
+	$AnimatedSprite.set_visible(false)
+	# show explosion animation
+	$ExplosionEffect.set_visible(true)
+	$ExplosionEffect.frame = 0
+	$ExplosionEffect.play('explosion')
+
+func stop_death_animation():
+	# show spaceship
+	$AnimatedSprite.set_visible(true)
+	# hide explosion animation
+	$ExplosionEffect.set_visible(false)
+	# NOTE: the stop method doesn't reset the frame counter
+	$ExplosionEffect.stop()
+	
+
 func kill_current_block():
 	if current_block:
 		current_block.queue_free()
@@ -79,11 +100,7 @@ func _process(delta):
 			# player collides frontally
 			is_dead = true
 			emit_signal('dead')
-			# hide spaceship
-			$AnimatedSprite.set_visible(false)
-			# show explosion animation
-			$ExplosionEffect.set_visible(true)
-			$ExplosionEffect.play('explosion')
+			play_death_animation()
 		else:
 			# player doesn't collide frontally, keep moving
 			# note: move_and_slide automatically multiplies `delta`
@@ -111,7 +128,7 @@ func set_current_block(type):
 func get_current_block():
 	return current_block
 
-func turn_block():	
+func turn_block():
 	if current_block:
 		# rotate block
 		current_block.turn()
@@ -120,4 +137,3 @@ func turn_block():
 		
 		clamp_vertically()
 		
-	

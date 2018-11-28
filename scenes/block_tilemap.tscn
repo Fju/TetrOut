@@ -7,7 +7,7 @@
 custom_solver_bias = 0.0
 extents = Vector2( 6, 6 )
 
-[node name="Node2D" type="Node2D" index="0"]
+[node name="Node2D" type="Node2D"]
 
 [node name="GreenBlock" type="Sprite" parent="." index="0"]
 
@@ -169,6 +169,7 @@ shape = SubResource( 1 )
 
 [node name="YellowBlock" type="Sprite" parent="." index="6"]
 
+editor/display_folded = true
 modulate = Color( 0.9, 1, 0.2, 1 )
 position = Vector2( 126, 6 )
 texture = ExtResource( 1 )

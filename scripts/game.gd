@@ -12,20 +12,38 @@ var next_type
 var can_shoot = false
 var can_go_right = true
 
-
 var desired_x = 0
 var level = 0
 var score = 0
 
 func _ready():
-	randomize()	
-	viewport.connect("size_changed", self, "_on_viewport_size_changed")	
-	$Player.connect('dead', self, '_on_Player_dead')	
+	randomize()
+	viewport.connect("size_changed", self, "_on_viewport_size_changed")
+	$Player.connect('dead', self, '_on_Player_dead')
+	$WastedEffect.connect('restart', self, '_on_WastedEffect_restart')
+	set_player_initial_position()
 	new_level()
+	
 
+func restart():
+	score = 0
+	level = 0
+	
+	if ghost_block:
+		ghost_block.queue_free()
+		ghost_block = null
+	
+	$Player.restart()
+	can_go_right = true
+	can_shoot = false
+	
+	set_player_initial_position()
+	new_level()
+	
 
 func new_level():
 	if level > 0:
+		# add 100 points to the score except it's the first level, that is generated
 		_on_canvas_scored(100)
 	
 	# TODO: sort and documentate!
@@ -71,19 +89,17 @@ func start_go_right():
 	can_go_right = false
 	can_shoot = false
 	
-	# hide ghost block and current block, but don't delete them
 	ghost_block.queue_free()
 	ghost_block = null
 	
-	$Player.kill_current_block()	
+	$Player.kill_current_block()
 	_on_viewport_size_changed()
 
+func set_player_initial_position():
+	var window_size = viewport.get_size_override()
+	$Player.set_global_position(Vector2(60, window_size.y / 2))
 	
 func _process(delta):
-	
-	if Input.is_action_just_pressed('debug_key'):
-		$WastedEffect.play()
-	
 	if Input.is_action_just_pressed('game_move_player_right') and can_go_right and can_shoot:
 		start_go_right()
 
@@ -102,7 +118,7 @@ func _process(delta):
 			_on_viewport_size_changed()
 			new_level()
 		
-	$Player.set_velocity(player_velocity)	
+	$Player.set_velocity(player_velocity)
 	
 	# check if timer is running to tell whether the player is allowed to shoot a block right now
 	if can_shoot:
@@ -123,7 +139,7 @@ func _process(delta):
 			animated_block.set_animation($Player.current_block.get_global_position(), ghost_block.get_global_position(), 0.4)
 			animated_block.connect("animation_end", self, "_on_AnimatedBlock_animation_end")
 			
-			add_child(animated_block)			
+			add_child(animated_block)
 			$Player.kill_current_block()
 	
 	if Input.is_action_just_pressed('game_escape'):
@@ -144,11 +160,15 @@ func _on_canvas_block_set():
 	$NextBlockTimer.start()
 
 func _on_canvas_scored(s):
-	score += s	
+	score += s
 	$GUI/ScoreLabel.set_text("Score: %d" % score)
 
 func _on_Player_dead():
-	print('wasted')
+	$WastedEffect.play()
+
+func _on_WastedEffect_restart():
+	$WastedEffect.stop()
+	restart()
 
 func _on_NextBlockTimer_timeout():
 	# generate next block
@@ -166,7 +186,6 @@ func _on_viewport_size_changed():
 	var canvas_size = canvas.get_size()
 	var canvas_pos = Vector2()
 	
-	# TODO: make 400 a constant with a reasonable name
 	canvas_pos.x = level * window_size.x - canvas_size.x
 	canvas_pos.y = (window_size.y - canvas_size.y) / 2
 	

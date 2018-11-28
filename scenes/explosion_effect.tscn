@@ -23,9 +23,10 @@ animations = [ {
 "speed": 10.0
 } ]
 
-[node name="AnimatedSprite" type="AnimatedSprite" index="0"]
+[node name="AnimatedSprite" type="AnimatedSprite"]
 
 frames = SubResource( 1 )
 animation = "explosion"
+frame = 12
 
 
