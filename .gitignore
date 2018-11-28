@@ -1,5 +1,4 @@
-./.import/
+.import/
 idea/
-*.import
 export_presets.cfg
 build/*

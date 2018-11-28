@@ -40,6 +40,8 @@ func restart():
 	set_player_initial_position()
 	new_level()
 	
+	$WastedEffect.start_background_music()
+	
 
 func new_level():
 	if level > 0:
@@ -97,8 +99,17 @@ func start_go_right():
 
 func set_player_initial_position():
 	var window_size = viewport.get_size_override()
+	
+	# before setting the player's position, we disable camera smoothing to prevent unwanted transitions
+	$Player/Camera2D.smoothing_enabled = false
+	# set player to start position
 	$Player.set_global_position(Vector2(60, window_size.y / 2))
 	
+	# force camera to update it's position before re-enabling camera smoothing
+	$Player/Camera2D.force_update_scroll()
+	$Player/Camera2D.smoothing_enabled = true
+
+
 func _process(delta):
 	if Input.is_action_just_pressed('game_move_player_right') and can_go_right and can_shoot:
 		start_go_right()

@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/wasted.ogg-d263a146f9656cb7cc14147c4c56bce6.oggstr"
+
+[deps]
+
+source_file="res://audio/wasted.ogg"
+dest_files=[ "res://.import/wasted.ogg-d263a146f9656cb7cc14147c4c56bce6.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

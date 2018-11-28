@@ -18,10 +18,14 @@ func _ready():
 	
 	$TextureRect.connect("gui_input", self, "_on_TextureRect_gui_input")
 	
+	start_background_music()
+
+func start_background_music():
+	$BackgroundMusic.play()
 
 func play():
 	$SoundEffect.play()
-	$AnimationPlayer.seek(0.0, true)
+	
 	$AnimationPlayer.play('Appear')
 	$TextureRect.set_visible(true)
 	$Text.set_visible(true)
@@ -30,14 +34,17 @@ func play():
 	is_playing = true
 
 func stop():
+	$BackgroundMusic.stop()
+	
 	$SoundEffect.stop()
 	$AnimationPlayer.stop()
+	# go back to beginning to reset all key-values to their initial state
+	$AnimationPlayer.seek(0, true)
 	
 	# hide all items
 	$TextureRect.set_visible(false)
 	$Text.set_visible(false)
 	$RestartLabel.set_visible(false)
-	
 	
 	is_playing = false
 
@@ -59,3 +66,8 @@ func _on_TextureRect_gui_input(ev):
 	# for touch screens
 	if ev.is_pressed() and is_playing:
 		emit_signal('restart')
+
+
+func _on_AnimationPlayer_animation_finished(anim_name):
+	$SoundEffect.stop()
+	$BackgroundMusic.stop()
