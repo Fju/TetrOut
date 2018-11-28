@@ -25,7 +25,7 @@ onready var ClearAnimationOverlay = clear_animation_overlay.new()
 
 signal block_set
 signal scored
-
+signal game_over
 
 func _init():
 	virtual_width = tetrout.ROWS * tetrout.BLOCK_SIZE
@@ -78,7 +78,7 @@ func add_block(block):
 	""" adds each brick to the area according the block's matrix
 	Args:
 		block:	block object
-	"""		
+	"""
 	var anchor = get_global_position()
 	var block_pos = block.get_global_position()
 	
@@ -92,12 +92,17 @@ func add_block(block):
 				var tile_id = Tilemap.tile_set.find_tile_by_name(block.get_block_name())
 				set_cell(pos.x + block.width - x - 1, pos.y + y - block.height, tile_id)
 	
-	emit_signal('scored', block.get_block_score())
-		
-	check_full_rows()
+	if pos.y >= tetrout.ROWS:
+		# maximum height reached, game over
+		emit_signal('game_over')
+	else:
+		# emit signal so that score is updated (gets increased by the block specific points)
+		emit_signal('scored', block.get_block_score())
+		# check
+		check_full_rows()
+	
 	update()
-	
-	
+
 func check_full_rows():
 	# start from the top
 	var h = tetrout.ROWS
@@ -120,10 +125,9 @@ func check_full_rows():
 		ClearAnimationOverlay.rows = rows_to_clear
 	else:
 		emit_signal('block_set')
-		
 
-	
-func clear_rows():	
+
+func clear_rows():
 	for row in rows_to_clear:
 		# pull down rows one-by-one starting from the top
 		# not very efficient, but it works for now			
@@ -140,7 +144,7 @@ func clear_rows():
 	# reset array
 	rows_to_clear = []
 
-		
+
 func get_collision_row(block, column):
 	""" check at which row/height a block collides with other blocks or the ground
 	Args:

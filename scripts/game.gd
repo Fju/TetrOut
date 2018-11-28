@@ -18,8 +18,8 @@ var score = 0
 
 func _ready():
 	randomize()
-	viewport.connect("size_changed", self, "_on_viewport_size_changed")
-	$Player.connect('dead', self, '_on_Player_dead')
+	viewport.connect('size_changed', self, '_on_viewport_size_changed')
+	$Player.connect('game_over', self, '_on_game_over')
 	$WastedEffect.connect('restart', self, '_on_WastedEffect_restart')
 	set_player_initial_position()
 	new_level()
@@ -66,6 +66,7 @@ func new_level():
 	canvas.generate_level(0.1)
 	canvas.connect('block_set', self, '_on_canvas_block_set')
 	canvas.connect('scored', self, '_on_canvas_scored')
+	canvas.connect('game_over', self, '_on_game_over')
 	
 	# call this function, so that the canvas' position is set correctly 
 	_on_viewport_size_changed()
@@ -174,7 +175,9 @@ func _on_canvas_scored(s):
 	score += s
 	$GUI/ScoreLabel.set_text("Score: %d" % score)
 
-func _on_Player_dead():
+func _on_game_over():
+	# set to dead so that the player can't be moved anymore
+	$Player.is_dead = true
 	$WastedEffect.play()
 
 func _on_WastedEffect_restart():

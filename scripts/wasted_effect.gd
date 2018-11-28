@@ -8,7 +8,7 @@ var is_playing = false
 
 func _ready():
 	viewport.connect("size_changed", self, "_on_viewport_size_changed")
-
+	
 	# reset all values
 	$TextureRect.set_visible(false)
 	$Text.set_visible(false)

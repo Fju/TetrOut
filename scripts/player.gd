@@ -21,7 +21,7 @@ var canvas_right = 0
 var velocity setget set_velocity, get_velocity
 var current_block setget set_current_block, get_current_block
 
-signal dead
+signal game_over
 
 var is_dead = false
 
@@ -98,13 +98,14 @@ func _process(delta):
 		# a collision object was returned
 		if collision.normal.x == -1:
 			# player collides frontally
-			is_dead = true
-			emit_signal('dead')
+			emit_signal('game_over')
 			play_death_animation()
 		else:
 			# player doesn't collide frontally, keep moving
 			# note: move_and_slide automatically multiplies `delta`
-			move_and_slide(velocity * speed)
+			# This might have been patched since [v3.0.6.stable.official.8314054]
+			#move_and_slide(velocity * speed)
+			pass
 
 	clamp_vertically()
 	
