@@ -46,7 +46,7 @@ transform = Transform2D( 1, 0, 0, 1, 0, 0 )
 
 [node name="Background" type="Sprite" parent="BackgroundLayer" index="0"]
 
-modulate = Color( 0.566406, 0.566406, 0.566406, 1 )
+modulate = Color( 0.33, 0.33, 0.33, 1 )
 texture = ExtResource( 2 )
 centered = false
 region_enabled = true
