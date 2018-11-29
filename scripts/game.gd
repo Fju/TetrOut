@@ -29,6 +29,8 @@ func restart():
 	score = 0
 	level = 0
 	
+	$GUI.set_score(score)
+	
 	if ghost_block:
 		ghost_block.queue_free()
 		ghost_block = null
@@ -53,7 +55,7 @@ func new_level():
 	
 	# show current level number
 	level += 1
-	$GUI/LevelLabel.set_text("Level: %d" % level)
+	$GUI.set_level(level)
 	
 	if canvas:
 		# delete completed canvas
@@ -173,7 +175,7 @@ func _on_canvas_block_set():
 
 func _on_canvas_scored(s):
 	score += s
-	$GUI/ScoreLabel.set_text("Score: %d" % score)
+	$GUI.set_score(score)
 
 func _on_game_over():
 	# set to dead so that the player can't be moved anymore
