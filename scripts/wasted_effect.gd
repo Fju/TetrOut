@@ -59,8 +59,6 @@ func _on_viewport_size_changed():
 	$TextureRect.set_size(window_size)
 	$Text.set_position(window_size * 0.5)
 	
-	$RestartLabel.set_size(Vector2(window_size.x, 20))
-	$RestartLabel.set_position(Vector2(0, window_size.y-20))
 
 func _on_TextureRect_gui_input(ev):
 	# for touch screens

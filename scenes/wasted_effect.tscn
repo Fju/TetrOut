@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://scripts/wasted_effect.gd" type="Script" id=1]
 [ext_resource path="res://assets/white_pixel.png" type="Texture" id=2]
 [ext_resource path="res://assets/wasted.png" type="Texture" id=3]
 [ext_resource path="res://audio/wasted.ogg" type="AudioStream" id=4]
-[ext_resource path="res://audio/db_pdx2.ogg" type="AudioStream" id=5]
+[ext_resource path="res://assets/fonts/munro_small_20.tres" type="DynamicFont" id=5]
+[ext_resource path="res://audio/db_pdx2.ogg" type="AudioStream" id=6]
 
 [sub_resource type="Shader" id=1]
 
@@ -120,7 +121,7 @@ tracks/6/keys = {
 "values": [ 1.0, 0.1 ]
 }
 
-[node name="CanvasLayer" type="CanvasLayer" index="0"]
+[node name="CanvasLayer" type="CanvasLayer"]
 
 layer = 1
 offset = Vector2( 0, 0 )
@@ -181,28 +182,29 @@ bus = "SoundEffects"
 
 modulate = Color( 1, 1, 1, 0 )
 anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 225.0
-margin_right = 123.0
-margin_bottom = 254.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -30.0
+margin_bottom = -8.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
+custom_fonts/font = ExtResource( 5 )
 text = "Hit space to restart"
 align = 1
+valign = 2
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "Margin", "Rect", "Visibility" ]
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility", "custom_fonts" ]
 
 [node name="BackgroundMusic" type="AudioStreamPlayer" parent="." index="5"]
 
-stream = ExtResource( 5 )
+stream = ExtResource( 6 )
 volume_db = 0.0
 pitch_scale = 1.0
 autoplay = false

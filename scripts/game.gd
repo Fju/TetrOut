@@ -29,6 +29,8 @@ func restart():
 	score = 0
 	level = 0
 	
+	$GUI.set_score(score)
+	
 	if ghost_block:
 		ghost_block.queue_free()
 		ghost_block = null
@@ -53,7 +55,7 @@ func new_level():
 	
 	# show current level number
 	level += 1
-	$GUI/LevelLabel.set_text("Level: %d" % level)
+	$GUI.set_level(level)
 	
 	if canvas:
 		# delete completed canvas
@@ -173,7 +175,7 @@ func _on_canvas_block_set():
 
 func _on_canvas_scored(s):
 	score += s
-	$GUI/ScoreLabel.set_text("Score: %d" % score)
+	$GUI.set_score(score)
 
 func _on_game_over():
 	# set to dead so that the player can't be moved anymore
@@ -205,12 +207,20 @@ func _on_viewport_size_changed():
 	
 	canvas.set_global_position(canvas_pos)
 	
+	
+	# before setting the player's position, we disable camera smoothing to prevent unwanted transitions
+	$Player/Camera2D.smoothing_enabled = false
+	
 	if can_go_right:
 		$Player.global_position.x = (level-1) * window_size.x + 60
 	else:
 		desired_x = level * window_size.x + 60
 	
 	$Player.set_camera_offset(window_size.x / 2 - 60)
+	# force camera to update it's position without camera smoothing enabled
+	$Player/Camera2D.force_update_scroll()
+	# re-enable camera smoothing
+	$Player/Camera2D.smoothing_enabled = true
 	
 	$Player.canvas_top = canvas_pos.y
 	$Player.canvas_bottom = canvas_pos.y + canvas.virtual_height
