@@ -27,7 +27,7 @@ void fragment() {
 
 render_priority = 0
 shader = SubResource( 1 )
-shader_param/level = 1.0
+shader_param/level = 0.0
 _sections_unfolded = [ "shader_param" ]
 
 [sub_resource type="Animation" id=3]
@@ -152,7 +152,9 @@ _sections_unfolded = [ "Material", "Rect" ]
 
 [node name="Text" type="Sprite" parent="." index="1"]
 
+visible = false
 position = Vector2( 180, 120 )
+scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 3 )
 _sections_unfolded = [ "Transform", "Visibility" ]
 
@@ -178,6 +180,7 @@ bus = "SoundEffects"
 
 [node name="RestartLabel" type="Label" parent="." index="4"]
 
+modulate = Color( 1, 1, 1, 0 )
 anchor_left = 0.0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -202,8 +205,8 @@ _sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility", "custom_fonts" 
 [node name="BackgroundMusic" type="AudioStreamPlayer" parent="." index="5"]
 
 stream = ExtResource( 6 )
-volume_db = -80.0
-pitch_scale = 0.1
+volume_db = 0.0
+pitch_scale = 1.0
 autoplay = false
 mix_target = 0
 bus = "BackgroundMusic"
