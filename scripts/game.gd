@@ -16,6 +16,8 @@ var desired_x = 0
 var level = 0
 var score = 0
 
+var blocks_remaining = 0
+
 func _ready():
 	randomize()
 	viewport.connect('size_changed', self, '_on_viewport_size_changed')
@@ -53,6 +55,10 @@ func new_level():
 	# TODO: sort and documentate!
 	can_go_right = true
 	
+	# set counter for remaining blocks
+	blocks_remaining = 30
+	$GUI.set_blocks_remaining(blocks_remaining)
+	
 	# show current level number
 	level += 1
 	$GUI.set_level(level)
@@ -65,7 +71,7 @@ func new_level():
 	canvas = TetrisCanvas.new()
 	add_child(canvas)
 	
-	canvas.generate_level(0.1)
+	canvas.generate_level(0.7)
 	canvas.connect('block_set', self, '_on_canvas_block_set')
 	canvas.connect('scored', self, '_on_canvas_scored')
 	canvas.connect('game_over', self, '_on_game_over')
@@ -77,25 +83,31 @@ func new_level():
 	$NextBlockTimer.start()
 	
 func next_block():
-	# TODO: make separate function for randomly choosing a block
 	if !next_type:
-		next_type = int(1 + (len(tetrout.BLOCK_TYPES) - 1) * randf())
+		next_type = blocks.pick_random_block()
 	
-	$Player.set_current_block(next_type)
-
-	ghost_block = blocks.new_ghost_block(next_type)
-	add_child(ghost_block)
-	can_shoot = true
+	$GUI.set_blocks_remaining(blocks_remaining)	
+	if blocks_remaining == 0:
+		start_go_right()
+	else:
+		$Player.set_current_block(next_type)
+		ghost_block = blocks.new_ghost_block(next_type)
+		add_child(ghost_block)
+		can_shoot = true
+	
+	# decrement counter
+	blocks_remaining -= 1
 	
 	# skip first element (which is tetrout.BLOCK_TYPES.EMPTY)
-	next_type = int(1 + (len(tetrout.BLOCK_TYPES) - 1) * randf())
+	next_type = blocks.pick_random_block()
 
 func start_go_right():
 	can_go_right = false
 	can_shoot = false
 	
-	ghost_block.queue_free()
-	ghost_block = null
+	if ghost_block:
+		ghost_block.queue_free()
+		ghost_block = null
 	
 	$Player.kill_current_block()
 	_on_viewport_size_changed()
@@ -180,6 +192,8 @@ func _on_canvas_scored(s):
 func _on_game_over():
 	# set to dead so that the player can't be moved anymore
 	$Player.is_dead = true
+	
+	$WastedEffect.set_score(score)
 	$WastedEffect.play()
 
 func _on_WastedEffect_restart():

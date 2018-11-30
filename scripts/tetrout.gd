@@ -118,3 +118,22 @@ static func get_block_name(type):
 			return 'YellowBlock'
 		_:
 			return ''
+
+static func get_block_probability(type):
+	match type:
+		BLOCK_TYPES.GREEN:
+			return 3
+		BLOCK_TYPES.CYAN:
+			return 3
+		BLOCK_TYPES.BLUE:
+			return 5
+		BLOCK_TYPES.RED:
+			return 2
+		BLOCK_TYPES.VIOLET:
+			return 2
+		BLOCK_TYPES.MAGENTA:
+			return 3
+		BLOCK_TYPES.YELLOW:
+			return 3
+		_:
+			return 0

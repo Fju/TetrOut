@@ -4,6 +4,11 @@ onready var viewport = get_viewport()
 
 func _ready():
 	viewport.connect('size_changed', self, '_on_viewport_size_changed')
+	_on_viewport_size_changed()
+
+func _process(delta):
+	if Input.is_action_just_pressed('game_escape'):
+		get_tree().quit()
 
 func _on_Start_pressed():
 	get_tree().change_scene('res://scenes/main.tscn')

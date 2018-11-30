@@ -91,7 +91,7 @@ tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 0, 3, 3.7 ),
+"times": PoolRealArray( 0, 4, 4.2 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
@@ -120,8 +120,20 @@ tracks/6/keys = {
 "update": 0,
 "values": [ 1.0, 0.1 ]
 }
+tracks/7/type = "value"
+tracks/7/path = NodePath("ScoreLabel:modulate")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0, 2.9, 3.1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
 
-[node name="CanvasLayer" type="CanvasLayer"]
+[node name="WastedEffect" type="CanvasLayer"]
 
 layer = 1
 offset = Vector2( 0, 0 )
@@ -153,10 +165,10 @@ _sections_unfolded = [ "Material", "Rect" ]
 [node name="Text" type="Sprite" parent="." index="1"]
 
 visible = false
-position = Vector2( 180, 120 )
+position = Vector2( 182.902, 117.609 )
 scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 3 )
-_sections_unfolded = [ "Transform", "Visibility" ]
+_sections_unfolded = [ "Animation", "Region", "Transform" ]
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="2"]
 
@@ -186,7 +198,7 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = -30.0
-margin_bottom = -8.0
+margin_bottom = -6.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -202,7 +214,30 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility", "custom_fonts" ]
 
-[node name="BackgroundMusic" type="AudioStreamPlayer" parent="." index="5"]
+[node name="ScoreLabel" type="Label" parent="." index="5"]
+
+modulate = Color( 1, 1, 1, 0 )
+anchor_left = 0.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = 18.0
+margin_bottom = 50.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 5 )
+text = "your score:"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility", "custom_fonts" ]
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="." index="6"]
 
 stream = ExtResource( 6 )
 volume_db = 0.0

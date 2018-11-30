@@ -23,6 +23,25 @@ static func new_animated_block(type):
 	# create new `AnimatedBlock` instance
 	return AnimatedBlock.new(type)
 
+static func pick_random_block():
+	var sum = 0
+	var probs = []
+	for t in range(1, len(tetrout.BLOCK_TYPES)):
+		var p = tetrout.get_block_probability(t)
+		sum += p
+		probs.append(p)
+	
+	var random = randf()
+	var r = 0
+	for t in range(len(probs)):
+		r += probs[t] / float(sum)
+		if r > random:
+			# re-use r variable for storing the blocks id
+			r = t
+			break
+	
+	# add 1 to skip empty block
+	return r + 1
 
 class Block extends Control:
 	var width

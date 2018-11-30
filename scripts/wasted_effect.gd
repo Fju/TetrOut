@@ -8,19 +8,14 @@ var is_playing = false
 
 func _ready():
 	viewport.connect("size_changed", self, "_on_viewport_size_changed")
-	
-	# reset all values
-	$TextureRect.set_visible(false)
-	$Text.set_visible(false)
-	$RestartLabel.set_visible(false)
-	
 	_on_viewport_size_changed()
 	
-	$TextureRect.connect("gui_input", self, "_on_TextureRect_gui_input")
-	
+	stop()
+	$TextureRect.connect("gui_input", self, "_on_TextureRect_gui_input")	
 	start_background_music()
 
 func start_background_music():
+	$BackgroundMusic.set_volume_db(0.0)
 	$BackgroundMusic.play()
 
 func play():
@@ -30,6 +25,7 @@ func play():
 	$TextureRect.set_visible(true)
 	$Text.set_visible(true)
 	$RestartLabel.set_visible(true)
+	$ScoreLabel.set_visible(true)
 	
 	is_playing = true
 
@@ -45,9 +41,12 @@ func stop():
 	$TextureRect.set_visible(false)
 	$Text.set_visible(false)
 	$RestartLabel.set_visible(false)
+	$ScoreLabel.set_visible(false)
 	
 	is_playing = false
 
+func set_score(score):
+	$ScoreLabel.set_text('Your score: %d' % score)
 
 func _process(delta):
 	if Input.is_action_just_pressed('game_accept') and is_playing:
