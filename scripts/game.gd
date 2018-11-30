@@ -71,7 +71,7 @@ func new_level():
 	canvas = TetrisCanvas.new()
 	add_child(canvas)
 	
-	canvas.generate_level(0.7)
+	canvas.generate_level()
 	canvas.connect('block_set', self, '_on_canvas_block_set')
 	canvas.connect('scored', self, '_on_canvas_scored')
 	canvas.connect('game_over', self, '_on_game_over')

@@ -45,7 +45,7 @@ func _ready():
 	add_child(ClearAnimationOverlay)
 
 
-func generate_level(difficulty=0.8):
+func generate_level(difficulty=1.5):
 	""" randomly places cells in the canvas, difficulty determines the probabilities
 	Args:
 		difficulty: a parameter that influences the probability for placing blocks
@@ -59,14 +59,17 @@ func generate_level(difficulty=0.8):
 		# exponentially decreasing probability (higher rows are less likely to have blocks)
 		# parameters were randomly chosen, no deeper meaning, can be tweaked
 		var prob = exp(-r*1.25) * difficulty
+		# keep track of how many blocks have already been placed to prevent full rows
+		var block_cnt = 0
 		for c in range(tetrout.COLUMNS):
-			if randf() > prob:
+			if randf() > prob * ((tetrout.COLUMNS - block_cnt) / float(tetrout.COLUMNS)):
 				# the probability for an item to be skiped is `1.0 - prob`
 				# this results in a block being placed with a probability of `prob`
 				continue
 			# set cell with a random tile id (block type/color)
 			var ids = Tilemap.tile_set.get_tiles_ids()
 			set_cell(c, r, ids[int(randf() * len(ids))])
+			block_cnt += 1
 
 func set_cell(x, y, id):
 	Tilemap.set_cell(tetrout.ROWS - y - 1, tetrout.COLUMNS - x - 1, id)
