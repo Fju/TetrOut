@@ -128,6 +128,11 @@ func set_player_initial_position():
 func _process(delta):
 	if Input.is_action_just_pressed('game_move_player_right') and can_go_right and can_shoot:
 		start_go_right()
+	
+	if Input.is_action_just_pressed('game_mute'):
+		# toggle mute of Master bus
+		var is_muted = AudioServer.is_bus_mute(0)
+		AudioServer.set_bus_mute(0, !is_muted)
 
 	var player_velocity = Vector2()
 	if Input.is_action_pressed('game_move_player_up'):
